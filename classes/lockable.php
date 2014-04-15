@@ -6,9 +6,9 @@ use
 	jobs\world
 ;
 
-class lockable implements world\lockable
+class lockable implements world\lockable, world\box
 {
-	private $locked = false;
+	private $locked = true;
 	private $insertedKey = null;
 	private $configuredKey = null;
 
@@ -48,9 +48,24 @@ class lockable implements world\lockable
 		return $this->setLocked(true);
 	}
 
+	public function open()
+	{
+		if ($this->locked === true)
+		{
+			throw new lockable\exception('Locked!');
+		}
+
+		return $this;
+	}
+
 	public function unlock()
 	{
 		return $this->setLocked(false);
+	}
+
+	public function close()
+	{
+		return $this;
 	}
 
 	private function setLocked($boolean)

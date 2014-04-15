@@ -2,7 +2,7 @@
 
 namespace jobs\world;
 
-interface openable
+interface box
 {
 	public function open();
 	public function close();
