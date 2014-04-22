@@ -8,10 +8,7 @@ class lockable extends \atoum
 {
 	public function testClass()
 	{
-		$this->testedClass
-			->implements('jobs\world\lockable')
-			->implements('jobs\world\box')
-		;
+		$this->testedClass->implements('jobs\world\lockable');
 	}
 
 	public function testTakeKey()
@@ -76,25 +73,6 @@ class lockable extends \atoum
 		;
 	}
 
-	public function testOpen()
-	{
-		$this
-			->given($this->newTestedInstance($key = new \mock\jobs\world\key()))
-			->then
-				->exception(function() { $this->testedInstance->open(); })
-					->isInstanceOf('jobs\lockable\exception')
-					->hasMessage('Locked!')
-
-			->given($this->testedInstance
-					->takeKey($key)
-					->unlock()
-			)
-			->then
-				->object($this->testedInstance->open())->isTestedInstance
-				->object($this->testedInstance->open())->isTestedInstance
-		;
-	}
-
 	public function testUnlock()
 	{
 		$this
@@ -115,27 +93,6 @@ class lockable extends \atoum
 				->exception(function() { $this->testedInstance->unlock(); })
 					->isInstanceOf('jobs\lockable\exception')
 					->hasMessage('Key does not match')
-		;
-	}
-
-	public function testClose()
-	{
-		$this
-			->given($this->newTestedInstance($key = new \mock\jobs\world\key()))
-			->then
-				->object($this->testedInstance->close())->isTestedInstance
-
-			->given($this->testedInstance->takeKey($key))
-			->then
-				->object($this->testedInstance->close())->isTestedInstance
-
-			->given($this->testedInstance->unlock())
-			->then
-				->object($this->testedInstance->close())->isTestedInstance
-
-			->given($this->testedInstance->open())
-			->then
-				->object($this->testedInstance->close())->isTestedInstance
 		;
 	}
 }

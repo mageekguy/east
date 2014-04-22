@@ -6,7 +6,7 @@ use
 	jobs\world
 ;
 
-class lockable implements world\lockable, world\box
+class lockable implements world\lockable
 {
 	private $locked = true;
 	private $insertedKey = null;

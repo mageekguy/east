@@ -13,4 +13,12 @@ class key implements world\key
 
 		return $this;
 	}
+
+	public function display(world\object\properties $properties)
+	{
+		$properties->add('material', 'silver');
+		$properties->add('pins', '532468');
+
+		return $this;
+	}
 }
