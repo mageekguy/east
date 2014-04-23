@@ -1,9 +1,9 @@
 <?php
 
-namespace jobs\world\key;
+namespace jobs\world\objects\key;
 
 use
-	jobs\world\lockable
+	jobs\world\objects\lockable
 ;
 
 interface agent extends aggregator

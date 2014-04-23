@@ -4,7 +4,7 @@ namespace jobs\collections;
 
 use
 	jobs\collection as valuesCollection,
-	jobs\collections\set as objectCollection,
+	jobs\collections\set as objectsCollection,
 	jobs\world\comparable,
 	jobs\world\collections
 ;
@@ -16,7 +16,7 @@ class dictionary implements collections\dictionary
 
 	public function __construct()
 	{
-		$this->objects = new objectCollection();
+		$this->objects = new objectsCollection();
 		$this->values = new valuesCollection();
 	}
 
@@ -46,18 +46,22 @@ class dictionary implements collections\dictionary
 		$this->objects->ifContains(
 			$object,
 			function($innerObject, $key) {
+				$this->objects->remove($innerObject);
 				$this->values->remove($key);
 			}
 		);
-
-		$this->objects->remove($object);
 
 		return $this;
 	}
 
 	public function apply(comparable $comparable, callable $callable)
 	{
-		$this->objects->ifContains($comparable, function($comparable, $key) use ($callable) { $this->values->apply($key, $callable); });
+		return $this->ifContains($comparable, $callable);
+	}
+
+	public function ifContains(comparable $comparable, callable $containsCallable, callable $notContainsCallable = null)
+	{
+		$this->objects->ifContains($comparable, function($comparable, $key) use ($containsCallable) { $this->values->apply($key, $containsCallable); }, $notContainsCallable);
 
 		return $this;
 	}

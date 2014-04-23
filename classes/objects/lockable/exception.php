@@ -1,5 +1,5 @@
 <?php
 
-namespace jobs\key;
+namespace jobs\objects\lockable;
 
 class exception extends \runtimeException implements \jobs\exception {}

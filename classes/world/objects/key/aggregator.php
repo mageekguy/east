@@ -1,9 +1,9 @@
 <?php
 
-namespace jobs\world\key;
+namespace jobs\world\objects\key;
 
 use
-	jobs\world\key
+	jobs\world\objects\key
 ;
 
 interface aggregator

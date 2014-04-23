@@ -1,28 +1,32 @@
 <?php
 
-namespace jobs\tests\units;
+namespace jobs\tests\units\objects;
 
-require __DIR__ . '/../runner.php';
+require __DIR__ . '/../../runner.php';
+
+use
+	mock\jobs\world\objects
+;
 
 class lockable extends \atoum
 {
 	public function testClass()
 	{
-		$this->testedClass->implements('jobs\world\lockable');
+		$this->testedClass->implements('jobs\world\objects\lockable');
 	}
 
 	public function testTakeKey()
 	{
 		$this
 			->given(
-				$this->newTestedInstance(new \mock\jobs\world\key()),
-				$key = new \mock\jobs\world\key()
+				$this->newTestedInstance(new objects\key()),
+				$key = new objects\key()
 			)
 			->then
 				->object($this->testedInstance->takeKey($key))->isTestedInstance
 
 				->exception(function() use ($key) { $this->testedInstance->takeKey($key); })
-					->isInstanceOf('jobs\lockable\exception')
+					->isInstanceOf('jobs\objects\lockable\exception')
 					->hasMessage('I can accept only one key at a time')
 		;
 	}
@@ -31,21 +35,21 @@ class lockable extends \atoum
 	{
 		$this
 			->given(
-				$this->newTestedInstance(new \mock\jobs\world\key()),
-				$agent = new \mock\jobs\world\key\agent()
+				$this->newTestedInstance(new objects\key()),
+				$agent = new objects\key\agent()
 			)
 			->then
 				->exception(function() use ($agent) { $this->testedInstance->giveKey($agent); })
-					->isInstanceOf('jobs\lockable\exception')
+					->isInstanceOf('jobs\objects\lockable\exception')
 					->hasMessage('I have no key')
 
-			->if($this->testedInstance->takeKey($key = new \mock\jobs\world\key()))
+			->if($this->testedInstance->takeKey($key = new objects\key()))
 			->then
 				->object($this->testedInstance->giveKey($agent))->isTestedInstance
 				->mock($agent)->call('takeKey')->withArguments($key)->once
 
 				->exception(function() use ($agent) { $this->testedInstance->giveKey($agent); })
-					->isInstanceOf('jobs\lockable\exception')
+					->isInstanceOf('jobs\objects\lockable\exception')
 					->hasMessage('I have no key')
 		;
 	}
@@ -53,13 +57,13 @@ class lockable extends \atoum
 	public function testLock()
 	{
 		$this
-			->given($this->newTestedInstance(new \mock\jobs\world\key()))
+			->given($this->newTestedInstance(new objects\key()))
 			->then
 				->exception(function() { $this->testedInstance->lock(); })
-					->isInstanceOf('jobs\lockable\exception')
+					->isInstanceOf('jobs\objects\lockable\exception')
 					->hasMessage('Key is missing')
 
-			->given($this->testedInstance->takeKey($insertedKey = new \mock\jobs\world\key()))
+			->given($this->testedInstance->takeKey($insertedKey = new objects\key()))
 			->if($this->calling($insertedKey)->match->isFluent)
 			->then
 				->object($this->testedInstance->lock())->isTestedInstance
@@ -68,7 +72,7 @@ class lockable extends \atoum
 			->if($this->calling($insertedKey)->match->throw = new \exception())
 			->then
 				->exception(function() { $this->testedInstance->lock(); })
-					->isInstanceOf('jobs\lockable\exception')
+					->isInstanceOf('jobs\objects\lockable\exception')
 					->hasMessage('Key does not match')
 		;
 	}
@@ -76,13 +80,13 @@ class lockable extends \atoum
 	public function testUnlock()
 	{
 		$this
-			->given($this->newTestedInstance(new \mock\jobs\world\key()))
+			->given($this->newTestedInstance(new objects\key()))
 			->then
 				->exception(function() { $this->testedInstance->unlock(); })
-					->isInstanceOf('jobs\lockable\exception')
+					->isInstanceOf('jobs\objects\lockable\exception')
 					->hasMessage('Key is missing')
 
-			->given($this->testedInstance->takeKey($insertedKey = new \mock\jobs\world\key()))
+			->given($this->testedInstance->takeKey($insertedKey = new objects\key()))
 			->if($this->calling($insertedKey)->match->isFluent)
 			->then
 				->object($this->testedInstance->unlock())->isTestedInstance
@@ -91,7 +95,7 @@ class lockable extends \atoum
 			->if($this->calling($insertedKey)->match->throw = new \exception())
 			->then
 				->exception(function() { $this->testedInstance->unlock(); })
-					->isInstanceOf('jobs\lockable\exception')
+					->isInstanceOf('jobs\objects\lockable\exception')
 					->hasMessage('Key does not match')
 		;
 	}

@@ -8,11 +8,11 @@ use
 	mock\jobs\world
 ;
 
-class set extends \atoum
+class bag extends \atoum
 {
 	public function testClass()
 	{
-		$this->testedClass->implements('jobs\world\collections\set');
+		$this->testedClass->implements('jobs\world\collections\bag');
 	}
 
 	public function testAdd()
@@ -23,18 +23,19 @@ class set extends \atoum
 				$comparable1 = new world\comparable()
 			)
 
-			->if($this->calling($comparable1)->ifEqualTo->doesNothing)
+			->if($this->calling($comparable1)->ifIdenticalTo->doesNothing)
 			->then
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
 
-			->if($this->calling($comparable1)->ifEqualTo = function($comparable, $callable) { $callable(); })
+			->if($this->calling($comparable1)->ifIdenticalTo = function($comparable, $callable) { $callable(); })
 			->then
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
 
-			->if($this->calling($comparable1)->ifEqualTo->doesNothing)
-				->object($this->testedInstance->add($comparable1 = new world\comparable()))->isTestedInstance
+			->if($this->calling($comparable1)->ifIdenticalTo->doesNothing)
+			->then
+				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(2)
 		;
 	}
@@ -48,9 +49,9 @@ class set extends \atoum
 				->sizeof($this->testedInstance)->isZero
 
 			->if(
-				$this->calling($comparable)->ifEqualTo->doesNothing,
+				$this->calling($comparable)->ifIdenticalTo->doesNothing,
 				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->ifEqualTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->ifIdenticalTo = function($comparable, $callable) { $callable(); }
 			)
 			->then
 				->object($this->testedInstance->remove($comparable))->isTestedInstance
@@ -85,15 +86,15 @@ class set extends \atoum
 				->boolean($contains)->isFalse
 
 			->if(
-				$this->calling($comparable)->ifEqualTo->doesNothing,
+				$this->calling($comparable)->ifIdenticalTo->doesNothing,
 				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->ifEqualTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->ifIdenticalTo = function($comparable, $callable) { $callable(); }
 			)
 			->then
 				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
 				->boolean($contains)->isTrue
 
-			->if($this->calling($comparable)->ifEqualTo->doesNothing)
+			->if($this->calling($comparable)->ifIdenticalTo->doesNothing)
 			->then
 				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
 				->boolean($contains)->isFalse

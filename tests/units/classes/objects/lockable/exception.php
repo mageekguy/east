@@ -1,8 +1,8 @@
 <?php
 
-namespace jobs\tests\units\lockable;
+namespace jobs\tests\units\objects\lockable;
 
-require __DIR__ . '/../../runner.php';
+require __DIR__ . '/../../../runner.php';
 
 class exception extends \atoum
 {

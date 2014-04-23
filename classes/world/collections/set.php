@@ -4,10 +4,6 @@ namespace jobs\world\collections;
 
 use jobs\world;
 
-interface set extends world\collection
+interface set extends world\collections\bag
 {
-	public function add(world\comparable $comparable);
-	public function remove(world\comparable $comparable);
-	public function apply($key, callable $callable);
-	public function ifContains(world\comparable $comparable, callable $containsCallable, callable $notContainsCallable = null);
 }

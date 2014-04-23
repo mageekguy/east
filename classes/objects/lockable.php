@@ -1,23 +1,23 @@
 <?php
 
-namespace jobs;
+namespace jobs\objects;
 
 use
 	jobs\world
 ;
 
-class lockable implements world\lockable
+class lockable implements world\objects\lockable
 {
 	private $locked = true;
 	private $insertedKey = null;
 	private $configuredKey = null;
 
-	public function __construct(world\key $key)
+	public function __construct(world\objects\key $key)
 	{
 		$this->configuredKey = $key;
 	}
 
-	public function takeKey(world\key $key)
+	public function takeKey(world\objects\key $key)
 	{
 		if ($this->insertedKey !== null)
 		{
@@ -29,7 +29,7 @@ class lockable implements world\lockable
 		return $this;
 	}
 
-	public function giveKey(world\key\aggregator $aggregator)
+	public function giveKey(world\objects\key\aggregator $aggregator)
 	{
 		if ($this->insertedKey === null)
 		{

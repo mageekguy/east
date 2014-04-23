@@ -1,6 +1,10 @@
 <?php
 
-namespace jobs\world;
+namespace jobs\world\objects;
+
+use
+	jobs\world\objects\key
+;
 
 interface lockable extends key\aggregator
 {
