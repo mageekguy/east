@@ -3,36 +3,60 @@
 namespace jobs\objects;
 
 use
+	jobs\collections,
 	jobs\world,
-	jobs\collections
+	jobs\world\objects
 ;
 
-class box
+class box implements objects\box
 {
-	private $objects = null;
+	protected $objects = null;
 
 	public function __construct()
 	{
 		$this->objects = new collections\bag();
 	}
 
-	public function add(world\object $object)
+	public function userOpen(objects\box\user $user, callable $callable)
 	{
-		$this->objects->add($object);
+		$callable();
 
 		return $this;
 	}
 
-	public function remove($number, callable $callable = null)
+	public function userClose(objects\box\user $user, callable $callable)
 	{
-		$this->objects->removeLast($callable, $number);
+		$callable();
 
 		return $this;
 	}
 
-	public function removeAll(callable $callable = null)
+	public function userAdd(objects\box\user $user, world\object $object)
 	{
-		$this->objects->removeAll($callable);
+		$user->openBox($this, function() use ($object) {
+				$this->objects->add($object);
+			}
+		);
+
+		return $this;
+	}
+
+	public function userRemove(objects\box\user $user, $number, callable $callable = null)
+	{
+		$user->openBox($this, function() use ($number, $callable) {
+				$this->objects->removeLast($callable, $number);
+			}
+		);
+
+		return $this;
+	}
+
+	public function userRemoveAll(objects\box\user $user, callable $callable = null)
+	{
+		$user->openBox($this, function() use ($callable) {
+				$this->objects->removeAll($callable);
+			}
+		);
 
 		return $this;
 	}

@@ -8,7 +8,6 @@ use
 
 class lock implements world\objects\lockable
 {
-	private $locked = true;
 	private $insertedKey = null;
 	private $configuredKey = null;
 
@@ -43,28 +42,11 @@ class lock implements world\objects\lockable
 		return $this;
 	}
 
-	public function lock(callable $lockFail)
+	public function ifKeyMatch(callable $callable)
 	{
-		return $this->checkInsertedKey(true, $lockFail);
-	}
-
-	public function unlock(callable $unlockFail)
-	{
-		return $this->checkInsertedKey(false, $unlockFail);
-	}
-
-	private function checkInsertedKey($boolean, callable $callable)
-	{
-		if ($this->insertedKey === null)
+		if ($this->insertedKey !== null)
 		{
-			throw new lock\exception('Key is missing');
-		}
-
-		$this->insertedKey->ifEqualTo($this->configuredKey, function() use ($boolean) { $this->locked = $boolean; });
-
-		if ($this->locked !== $boolean)
-		{
-			$callable();
+			$this->insertedKey->ifEqualTo($this->configuredKey, function() use ($callable) { $callable(); });
 		}
 
 		return $this;

@@ -54,73 +54,22 @@ class lock extends \atoum
 		;
 	}
 
-	public function testLock()
+	public function testIfKeyMatch()
 	{
 		$this
 			->given($this->newTestedInstance(new objects\key()))
 			->then
-				->exception(function() { $this->testedInstance->lock(function() {}); })
-					->isInstanceOf('jobs\objects\lock\exception')
-					->hasMessage('Key is missing')
+				->object($this->testedInstance->ifKeyMatch(function() {}))->isTestedInstance
 
 			->given($this->testedInstance->takeKey($insertedKey = new objects\key()))
+			->then
+				->object($this->testedInstance->ifKeyMatch(function() use (& $unlocked) { $unlocked = true; }))->isTestedInstance
+				->variable($unlocked)->isNull
 
 			->if($this->calling($insertedKey)->ifEqualTo = function($comparable, $callable) { $callable(); })
 			->then
-				->object($this->testedInstance->lock(function() use (& $lockFail) { $lockFail = true; }))->isTestedInstance
-				->variable($lockFail)->isNull
-
-			->if($this->calling($insertedKey)->ifEqualTo->doesNothing)
-			->then
-				->object($this->testedInstance->lock(function() use (& $lockFail) { $lockFail = true; }))->isTestedInstance
-				->variable($lockFail)->isNull
-
-			->given(
-				$this->calling($insertedKey)->ifEqualTo = function($comparable, $callable) { $callable(); },
-				$this->testedInstance->unlock(function() {})
-			)
-			->then
-				->object($this->testedInstance->lock(function() use (& $lockFail) { $lockFail = true; }))->isTestedInstance
-				->variable($lockFail)->isNull
-
-			->given(
-				$this->calling($insertedKey)->ifEqualTo = function($comparable, $callable) { $callable(); },
-				$this->testedInstance->unlock(function() {})
-			)
-
-			->if($this->calling($insertedKey)->ifEqualTo->doesNothing)
-			->then
-				->object($this->testedInstance->lock(function() use (& $lockFail) { $lockFail = true; }))->isTestedInstance
-				->boolean($lockFail)->isTrue
-		;
-	}
-
-	public function testUnlock()
-	{
-		$this
-			->given($this->newTestedInstance(new objects\key()))
-			->then
-				->exception(function() { $this->testedInstance->unlock(function() {}); })
-					->isInstanceOf('jobs\objects\lock\exception')
-					->hasMessage('Key is missing')
-
-			->given($this->testedInstance->takeKey($insertedKey = new objects\key()))
-
-			->if($this->calling($insertedKey)->ifEqualTo = function($comparable, $callable) { $callable(); })
-			->then
-				->object($this->testedInstance->unlock(function() use (& $unlockFail) { $unlockFail = true; }))->isTestedInstance
-				->variable($unlockFail)->isNull
-
-				->object($this->testedInstance->unlock(function() use (& $unlockFail) { $unlockFail = true; }))->isTestedInstance
-				->variable($unlockFail)->isNull
-
-			->if(
-				$this->testedInstance->lock(function() {}),
-				$this->calling($insertedKey)->ifEqualTo->doesNothing
-			)
-			->then
-				->object($this->testedInstance->unlock(function() use (& $unlockFail) { $unlockFail = true; }))->isTestedInstance
-				->boolean($unlockFail)->isTrue
+				->object($this->testedInstance->ifKeyMatch(function() use (& $unlocked) { $unlocked = true; }))->isTestedInstance
+				->boolean($unlocked)->isTrue
 		;
 	}
 }

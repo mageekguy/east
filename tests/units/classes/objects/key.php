@@ -23,16 +23,15 @@ class key extends \atoum
 				$this->newTestedInstance,
 				$key = new objects\key()
 			)
-
-			->if($this->calling($key)->ifEqualTo->doesNothing)
 			->then
 				->object($this->testedInstance->ifEqualTo($key, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
 				->variable($isEqualTo)->isNull
 
-			->if($this->calling($key)->ifEqualTo = function($comparable, $callable) { $callable(); })
-			->then
-				->object($this->testedInstance->ifEqualTo($key, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
+				->object($this->testedInstance->ifEqualTo($this->testedInstance, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
 				->boolean($isEqualTo)->isTrue
+
+				->object($this->testedInstance->ifEqualTo(clone $this->testedInstance, function() use (& $cloneIsEqualTo) { $cloneIsEqualTo = true; }))->isTestedInstance
+				->boolean($cloneIsEqualTo)->isTrue
 		;
 	}
 
@@ -43,15 +42,11 @@ class key extends \atoum
 				$this->newTestedInstance,
 				$key = new objects\key()
 			)
-
-			->if($this->calling($key)->ifIdenticalTo->doesNothing)
 			->then
 				->object($this->testedInstance->ifIdenticalTo($key, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
 				->variable($isEqualTo)->isNull
 
-			->if($this->calling($key)->ifIdenticalTo = function($comparable, $callable) { $callable(); })
-			->then
-				->object($this->testedInstance->ifIdenticalTo($key, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
+				->object($this->testedInstance->ifIdenticalTo($this->testedInstance, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
 				->boolean($isEqualTo)->isTrue
 		;
 	}
