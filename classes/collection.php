@@ -30,11 +30,28 @@ class collection implements world\collection
 		return $this;
 	}
 
-	public function remove($key)
+	public function remove($key, callable $callable = null)
 	{
-		if (isset($this->values[$key]) === true)
+		return $this->apply($key, function($value) use ($key, $callable) {
+				if ($callable !== null)
+				{
+					$callable($value);
+				}
+
+				unset($this->values[$key]);
+			}
+		);
+	}
+
+	public function removeLast(callable $callable = null)
+	{
+		end($this->values);
+
+		$key = key($this->values);
+
+		if ($key !== false)
 		{
-			unset($this->values[$key]);
+			$this->remove($key, $callable);
 		}
 
 		return $this;

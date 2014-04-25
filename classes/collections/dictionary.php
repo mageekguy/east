@@ -68,7 +68,13 @@ class dictionary implements collections\dictionary
 
 	public function walk(callable $callable)
 	{
-		$this->values->walk(function($value, $key) use ($callable) { $this->objects->apply($key, function($object) use ($value, $callable) { call_user_func_array($callable, array($value, $object)); }); });
+		$this->values->walk(function($value, $key) use ($callable) {
+				$this->objects->apply($key, function($object) use ($value, $callable) {
+						call_user_func_array($callable, array($value, $object));
+					}
+				);
+			}
+		);
 
 		return $this;
 	}

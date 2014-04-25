@@ -57,6 +57,53 @@ class collection extends \atoum
 			->then
 				->object($this->testedInstance->remove($key))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
+
+			->if(
+				$this->testedInstance->add($value1 = uniqid(), $key1 = uniqid()),
+				$this->testedInstance->add($value2 = uniqid(), $key2 = uniqid())
+			)
+			->then
+				->object($this->testedInstance->remove($key2, function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(2)
+				->string($removedValue)->isEqualTo($value2)
+
+				->object($this->testedInstance->remove($key1, function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+				->string($removedValue)->isEqualTo($value1)
+		;
+	}
+
+	public function testRemoveLast()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if($this->testedInstance->add(uniqid()))
+			->then
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->testedInstance
+					->add($value0 = uniqid())
+					->add($value1 = uniqid(), uniqid())
+					->add($value2 = uniqid())
+			)
+			->then
+				->object($this->testedInstance->removeLast(function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(2)
+				->string($removedValue)->isEqualTo($value2)
+
+				->object($this->testedInstance->removeLast(function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+				->string($removedValue)->isEqualTo($value1)
+
+				->object($this->testedInstance->removeLast(function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+				->string($removedValue)->isEqualTo($value0)
 		;
 	}
 

@@ -13,7 +13,7 @@ class bag implements world\collections\bag
 
 	public function __construct()
 	{
-		$this->comparables = new jobs\collection();
+		$this->init();
 	}
 
 	public function count()
@@ -42,9 +42,69 @@ class bag implements world\collections\bag
 		return $this->ifContains($comparable, function() {}, function() use ($comparable) { $this->comparables->add($comparable); });
 	}
 
-	public function remove(world\comparable $comparable)
+	public function remove(world\comparable $comparable, callable $callable = null)
 	{
-		return $this->ifContains($comparable, function($innerComparable, $key) {$this->comparables->remove($key)->stop(); });
+		return $this->ifContains($comparable, function($innerComparable, $key) use ($callable) {
+				$this->removeAt($key, $callable);
+			}
+		);
+	}
+
+	public function removeAt($removedKey, callable $callable = null)
+	{
+		if ($callable !== null)
+		{
+			$this->apply($removedKey, $callable);
+		}
+
+		$this->init()->walk(function($comparable, $key) use ($removedKey) {
+				if ($key != $removedKey)
+				{
+					$this->comparables->add($comparable);
+				}
+			}
+		);
+
+		return $this;
+	}
+
+	public function removeLast(callable $callable = null, $number = 1)
+	{
+		$callable = function($comparable) use (& $removedComparable, $callable) {
+			$removedComparable = $comparable;
+
+			if ($callable !== null)
+			{
+				$callable($comparable);
+			}
+		};
+
+		$this->comparables->removeLast($callable);
+
+		while (--$number > 0 && $removedComparable !== null)
+		{
+			$this->comparables->removeLast($callable);
+		}
+
+		return $this;
+	}
+
+	public function removeAll(callable $callable = null)
+	{
+		$comparables = $this->init();
+
+		if ($callable !== null)
+		{
+			$comparables->walk(function($comparable, $key) use ($callable) {
+					if ($callable !== null)
+					{
+						$callable($comparable);
+					}
+				}
+			);
+		}
+
+		return $this;
 	}
 
 	public function apply($key, callable $callable)
@@ -73,5 +133,14 @@ class bag implements world\collections\bag
 		$this->comparables->ifNotStopped($callable);
 
 		return $this;
+	}
+
+	private function init()
+	{
+		$comparables = $this->comparables;
+
+		$this->comparables = new jobs\collection();
+
+		return $comparables;
 	}
 }

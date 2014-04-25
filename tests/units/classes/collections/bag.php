@@ -56,6 +56,149 @@ class bag extends \atoum
 			->then
 				->object($this->testedInstance->remove($comparable))->isTestedInstance
 				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->calling($comparable)->ifIdenticalTo->doesNothing,
+				$this->testedInstance->add($comparable),
+				$this->calling($comparable)->ifIdenticalTo = function($comparable, $callable) { $callable(); }
+			)
+			->then
+				->object($this->testedInstance->remove($comparable, function($comparable) use (& $removedComparable) { $removedComparable = $comparable; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+				->object($removedComparable)->isIdenticalTo($comparable)
+		;
+	}
+
+	public function testRemoveAt()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->removeAt(rand(- PHP_INT_MAX, PHP_INT_MAX)))->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->testedInstance
+					->add(new world\comparable())
+					->add(new world\comparable())
+			)
+			->then
+				->object($this->testedInstance->removeAt(0))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+
+				->object($this->testedInstance->removeAt(1))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+
+				->object($this->testedInstance->removeAt(0))->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->testedInstance
+					->add(new world\comparable())
+					->add(new world\comparable())
+			)
+			->then
+				->object($this->testedInstance->removeAt(1))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+
+				->object($this->testedInstance->removeAt(0))->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->testedInstance
+					->add($comparable0 = new world\comparable())
+					->add($comparable1 = new world\comparable())
+			)
+			->then
+				->object($this->testedInstance->removeAt(0, function($comparable) use (& $removedComparable0) { $removedComparable0 = $comparable; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+				->object($removedComparable0)->isIdenticalTo($comparable0)
+
+				->object($this->testedInstance->removeAt(1, function($comparable) use (& $removedComparable1) { $removedComparable1 = $comparable; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+				->variable($removedComparable1)->isNull
+
+				->object($this->testedInstance->removeAt(0, function($comparable) use (& $removedComparable0) { $removedComparable0 = $comparable; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+				->object($removedComparable0)->isIdenticalTo($comparable1)
+		;
+	}
+
+	public function testRemoveLast()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->testedInstance
+					->add(new world\comparable())
+					->add(new world\comparable())
+			)
+			->then
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->testedInstance
+					->add($comparable0 = new world\comparable())
+					->add($comparable1 = new world\comparable())
+			)
+			->then
+				->object($this->testedInstance->removeLast(function($comparable) use (& $removedComparable) { $removedComparable = $comparable; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+				->object($removedComparable)->isEqualTo($comparable1)
+
+				->object($this->testedInstance->removeLast(function($comparable) use (& $removedComparable) { $removedComparable = $comparable; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+				->object($removedComparable)->isEqualTo($comparable0)
+
+			->if(
+				$this->testedInstance
+					->add($comparable0 = new world\comparable())
+					->add($comparable1 = new world\comparable())
+					->add($comparable2 = new world\comparable())
+			)
+			->then
+				->object($this->testedInstance->removeLast(function($comparable) use (& $removedComparables) { $removedComparables[] = $comparable; }, 2))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+				->array($removedComparables)->isEqualTo([ $comparable2, $comparable1 ])
+		;
+	}
+
+	public function testRemoveAll()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->removeAll())->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->testedInstance
+					->add(new world\comparable())
+					->add(new world\comparable())
+					->add(new world\comparable())
+			)
+			->then
+				->object($this->testedInstance->removeAll())->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+
+			->if(
+				$this->testedInstance
+					->add($comparable0 = new world\comparable())
+					->add($comparable1 = new world\comparable())
+					->add($comparable2 = new world\comparable())
+			)
+			->then
+				->object($this->testedInstance->removeAll(function($comparable) use (& $removedComparables) { $removedComparables[] = $comparable; }))->isTestedInstance
+				->sizeof($this->testedInstance)->isZero
+				->array($removedComparables)->isEqualTo([ $comparable0, $comparable1, $comparable2 ])
 		;
 	}
 
