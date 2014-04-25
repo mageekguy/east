@@ -70,21 +70,7 @@ class bag implements world\collections\bag
 
 	public function removeLast(callable $callable = null, $number = 1)
 	{
-		$callable = function($comparable) use (& $removedComparable, $callable) {
-			$removedComparable = $comparable;
-
-			if ($callable !== null)
-			{
-				$callable($comparable);
-			}
-		};
-
-		$this->comparables->removeLast($callable);
-
-		while (--$number > 0 && $removedComparable !== null)
-		{
-			$this->comparables->removeLast($callable);
-		}
+		$this->comparables->removeLast($callable, $number);
 
 		return $this;
 	}

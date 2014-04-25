@@ -104,6 +104,17 @@ class collection extends \atoum
 				->object($this->testedInstance->removeLast(function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
 				->sizeof($this->testedInstance)->isZero
 				->string($removedValue)->isEqualTo($value0)
+
+			->if(
+				$this->testedInstance
+					->add($value0 = uniqid())
+					->add($value1 = uniqid(), uniqid())
+					->add($value2 = uniqid())
+			)
+			->then
+				->object($this->testedInstance->removeLast(function($value) use (& $removedValues) { $removedValues[] = $value; }, 2))->isTestedInstance
+				->sizeof($this->testedInstance)->isEqualTo(1)
+				->array($removedValues)->isEqualTo([ $value2, $value1 ])
 		;
 	}
 

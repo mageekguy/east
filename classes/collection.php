@@ -43,13 +43,9 @@ class collection implements world\collection
 		);
 	}
 
-	public function removeLast(callable $callable = null)
+	public function removeLast(callable $callable = null, $number = 1)
 	{
-		end($this->values);
-
-		$key = key($this->values);
-
-		if ($key !== false)
+		while (($key = $this->getLastKey()) !== null && $number-- > 0)
 		{
 			$this->remove($key, $callable);
 		}
@@ -99,5 +95,13 @@ class collection implements world\collection
 		}
 
 		return $this;
+	}
+
+	private function getLastKey()
+	{
+		end($this->values);
+		$key = key($this->values);
+
+		return ($key === false ? null : $key);
 	}
 }
