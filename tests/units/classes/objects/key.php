@@ -4,6 +4,11 @@ namespace jobs\tests\units\objects;
 
 require __DIR__ . '/../../runner.php';
 
+use
+	mock\jobs\world,
+	mock\jobs\world\objects
+;
+
 class key extends \atoum
 {
 	public function testClass()
@@ -16,7 +21,7 @@ class key extends \atoum
 		$this
 			->given(
 				$this->newTestedInstance,
-				$key = new \mock\jobs\world\objects\key()
+				$key = new objects\key()
 			)
 
 			->if($this->calling($key)->ifEqualTo->doesNothing)
@@ -36,7 +41,7 @@ class key extends \atoum
 		$this
 			->given(
 				$this->newTestedInstance,
-				$key = new \mock\jobs\world\objects\key()
+				$key = new objects\key()
 			)
 
 			->if($this->calling($key)->ifIdenticalTo->doesNothing)
@@ -48,6 +53,18 @@ class key extends \atoum
 			->then
 				->object($this->testedInstance->ifIdenticalTo($key, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
 				->boolean($isEqualTo)->isTrue
+		;
+	}
+
+	public function testAddIn()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$area = new world\area()
+			)
+			->then
+				->object($this->testedInstance->addIn($area))->isTestedInstance
 		;
 	}
 }

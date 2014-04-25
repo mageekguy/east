@@ -1,6 +1,6 @@
 <?php
 
-namespace jobs\tests\units\objects\lockable;
+namespace jobs\tests\units\objects\lock;
 
 require __DIR__ . '/../../../runner.php';
 

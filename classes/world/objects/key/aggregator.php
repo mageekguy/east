@@ -3,7 +3,8 @@
 namespace jobs\world\objects\key;
 
 use
-	jobs\world\objects\key
+	jobs\world\objects\key,
+	jobs\world\objects\lockable
 ;
 
 interface aggregator

@@ -8,4 +8,5 @@ use
 
 interface property
 {
+	public function linkTo(world\object $object, world\area $area);
 }
