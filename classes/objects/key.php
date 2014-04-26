@@ -34,18 +34,4 @@ class key implements world\objects\key
 
 		return $this;
 	}
-
-	public function lock(lockable $lockable, callable $callable)
-	{
-		$lockable->ifKeyLock($this, $callable);
-
-		return $this;
-	}
-
-	public function unlock(lockable $lockable, callable $callable)
-	{
-		$lockable->ifKeyUnlock($this, $callable);
-
-		return $this;
-	}
 }
