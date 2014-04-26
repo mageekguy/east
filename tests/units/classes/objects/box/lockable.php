@@ -19,9 +19,10 @@ class lockable extends \atoum
 	{
 		$this
 			->given(
-				$this->newTestedInstance(new objects\key()),
+				$this->newTestedInstance($key = new objects\key()),
+				$this->calling($key)->ifEqualTo = function($key, $callable) { $callable(); },
 				$user = new objects\box\user(),
-				$this->calling($user)->unlock = function($lock, $callable) { $callable(); }
+				$this->calling($user)->insertKeyIn = function($lock, $callable) use ($key) { $callable($key); }
 			)
 			->then
 				->object($this->testedInstance->userOpen($user, function() use (& $unlocked) { $unlocked = true; }))->isTestedInstance
@@ -33,9 +34,10 @@ class lockable extends \atoum
 	{
 		$this
 			->given(
-				$this->newTestedInstance(new objects\key()),
+				$this->newTestedInstance($key = new objects\key()),
+				$this->calling($key)->ifEqualTo = function($key, $callable) { $callable(); },
 				$user = new objects\box\user(),
-				$this->calling($user)->lock = function($lock, $callable) { $callable(); }
+				$this->calling($user)->insertKeyIn = function($lock, $callable) use ($key) { $callable($key); }
 			)
 			->then
 				->object($this->testedInstance->userClose($user, function() use (& $locked) { $locked = true; }))->isTestedInstance

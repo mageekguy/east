@@ -8,46 +8,39 @@ use
 
 class lock implements world\objects\lockable
 {
-	private $insertedKey = null;
-	private $configuredKey = null;
+	private $key = null;
 
 	public function __construct(world\objects\key $key)
 	{
-		$this->configuredKey = $key;
+		$this->key = $key;
 	}
 
-	public function takeKey(world\objects\key $key)
+	public function agentLock(world\objects\key\agent $agent, callable $callable)
 	{
-		if ($this->insertedKey !== null)
-		{
-			throw new lock\exception('I can accept only one key at a time');
-		}
+		$agent->insertKeyIn($this, function($key) use ($agent, $callable) {
+				$key->ifEqualTo($this->key, function() use ($agent, $key, $callable) {
+						$callable();
 
-		$this->insertedKey = $key;
+						$agent->takeKey($this, $key);
+					}
+				);
+			}
+		);
 
 		return $this;
 	}
 
-	public function giveKey(world\objects\key\aggregator $aggregator)
+	public function agentUnlock(world\objects\key\agent $agent, callable $callable)
 	{
-		if ($this->insertedKey === null)
-		{
-			throw new lock\exception('I have no key');
-		}
+		$agent->insertKeyIn($this, function($key) use ($agent, $callable) {
+				$key->ifEqualTo($this->key, function() use ($agent, $key, $callable) {
+						$callable();
 
-		$aggregator->takeKey($this->insertedKey, $this);
-
-		$this->insertedKey = null;
-
-		return $this;
-	}
-
-	public function ifKeyMatch(callable $callable)
-	{
-		if ($this->insertedKey !== null)
-		{
-			$this->insertedKey->ifEqualTo($this->configuredKey, function() use ($callable) { $callable(); });
-		}
+						$agent->takeKey($this, $key);
+					}
+				);
+			}
+		);
 
 		return $this;
 	}

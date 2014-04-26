@@ -51,18 +51,28 @@ class user implements world\objects\box\user
 {
 	private $key = null;
 
-	public function takeKey(world\objects\key $key)
+	public function takeKey(world\objects\lockable $lockable, world\objects\key $key, callable $callable = null)
 	{
+		$this->lockable = $lockable;
 		$this->key = $key;
+
+		if ($callable !== null)
+		{
+			$callable();
+		}
 
 		return $this;
 	}
 
-	public function giveKey(world\objects\key\aggregator $aggregator)
+	public function giveKey(world\objects\lockable $lockable, world\objects\key\aggregator $aggregator, callable $callable = null)
 	{
-		$aggregator->takeKey($this->key);
+		$lockable->ifEqualTo($this->lockable, function() use ($callable) {
+				$aggregator->takeKey($this->key, $callable ?: function() {});
 
-		$this->key = null;
+				$this->lockable = null;
+				$this->key = null;
+			}
+		);
 
 		return $this;
 	}
@@ -81,40 +91,9 @@ class user implements world\objects\box\user
 		return $this;
 	}
 
-	public function lock(world\objects\lockable $lockable, callable $callable)
+	public function insertKeyIn(world\objects\lockable $lockable, callable $callable)
 	{
-		$lockable
-			->takeKey($this->key)
-			->ifKeyMatch(function() use($callable, & $locked) {
-					$locked = true; $callable();
-				}
-			)
-			->giveKey($this)
-		;
-
-		if ($locked === null)
-		{
-			echo 'Unable to lock!' . PHP_EOL;
-		}
-
-		return $this;
-	}
-
-	public function unlock(world\objects\lockable $lockable, callable $callable)
-	{
-		$lockable
-			->takeKey($this->key)
-			->ifKeyMatch(function() use ($callable, & $unlocked) {
-					$unlocked = true;
-					$callable();
-				}
-			)
-			->giveKey($this);
-
-		if ($unlocked === null)
-		{
-			echo 'Unable to unlock!' . PHP_EOL;
-		}
+		$callable($this->key);
 
 		return $this;
 	}
@@ -125,9 +104,11 @@ $user = new user();
 $goodKey = new key();
 $badKey = new key();
 
-$user->takeKey($goodKey);
+$lockable = (new lockable($goodKey));
 
-$lockable = (new lockable($goodKey))
+$user->takeKey($lockable, $goodKey);
+
+$lockable
 	->userAdd($user, new object())
 	->userAdd($user, new object())
 	->userAdd($user, new object())
@@ -141,9 +122,9 @@ $lockable
 	->userRemoveAll($user, function($object) { echo $object . PHP_EOL; })
 ;
 
-$user->takeKey($badKey);
+$user->takeKey($lockable, $badKey);
 
-$lockable = (new lockable($goodKey = new key()))
+$lockable
 	->userAdd($user, new object())
 	->userAdd($user, new object())
 	->userAdd($user, new object())

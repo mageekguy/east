@@ -50,16 +50,4 @@ class key extends \atoum
 				->boolean($isEqualTo)->isTrue
 		;
 	}
-
-	public function testAddIn()
-	{
-		$this
-			->given(
-				$this->newTestedInstance,
-				$area = new world\area()
-			)
-			->then
-				->object($this->testedInstance->addIn($area))->isTestedInstance
-		;
-	}
 }

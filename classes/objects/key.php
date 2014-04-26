@@ -3,9 +3,7 @@
 namespace jobs\objects;
 
 use
-	jobs\world,
-	jobs\object,
-	jobs\object\property
+	jobs\world
 ;
 
 class key implements world\objects\key
@@ -37,9 +35,16 @@ class key implements world\objects\key
 		return $this;
 	}
 
-	public function addIn(world\area $area)
+	public function lock(lockable $lockable, callable $callable)
 	{
-		(new object\property(new property\name('color'), new property\value('silver')))->linkTo($this, $area);
+		$lockable->ifKeyLock($this, $callable);
+
+		return $this;
+	}
+
+	public function unlock(lockable $lockable, callable $callable)
+	{
+		$lockable->ifKeyUnlock($this, $callable);
 
 		return $this;
 	}

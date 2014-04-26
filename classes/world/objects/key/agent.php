@@ -8,6 +8,4 @@ use
 
 interface agent extends aggregator
 {
-	public function lock(lockable $lockable, callable $callable);
-	public function unlock(lockable $lockable, callable $callable);
 }

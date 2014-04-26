@@ -5,7 +5,8 @@ namespace jobs\tests\units\objects;
 require __DIR__ . '/../../runner.php';
 
 use
-	mock\jobs\world\objects
+	mock\jobs\world\objects,
+	mock\jobs\world\objects\key\agent
 ;
 
 class lock extends \atoum
@@ -15,61 +16,61 @@ class lock extends \atoum
 		$this->testedClass->implements('jobs\world\objects\lockable');
 	}
 
-	public function testTakeKey()
+	public function testAgentLock()
 	{
 		$this
 			->given(
-				$this->newTestedInstance(new objects\key()),
-				$key = new objects\key()
+				$this->newTestedInstance($key = new objects\key()),
+				$agent = new agent()
+			)
+
+			->if(
+				$this->calling($agent)->insertKeyIn->doesNothing,
+				$this->calling($key)->ifEqualTo->doesNothing
 			)
 			->then
-				->object($this->testedInstance->takeKey($key))->isTestedInstance
+				->object($this->testedInstance->agentLock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
+				->variable($locked)->isNull
 
-				->exception(function() use ($key) { $this->testedInstance->takeKey($key); })
-					->isInstanceOf('jobs\objects\lock\exception')
-					->hasMessage('I can accept only one key at a time')
+			->if($this->calling($agent)->insertKeyIn = function($lock, $callable) use ($key) { $callable($key); })
+			->then
+				->object($this->testedInstance->agentLock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
+				->variable($locked)->isNull
+
+			->if($this->calling($key)->ifEqualTo = function($key, $callable) { $callable(); })
+			->then
+				->object($this->testedInstance->agentLock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
+				->boolean($locked)->isTrue
+				->mock($agent)->call('takeKey')->withIdenticalArguments($this->testedInstance, $key)->once
 		;
 	}
 
-	public function testGiveKey()
+	public function testAgentUnLock()
 	{
 		$this
 			->given(
-				$this->newTestedInstance(new objects\key()),
-				$agent = new objects\key\agent()
+				$this->newTestedInstance($key = new objects\key()),
+				$agent = new agent()
+			)
+
+			->if(
+				$this->calling($agent)->insertKeyIn->doesNothing,
+				$this->calling($key)->ifEqualTo->doesNothing
 			)
 			->then
-				->exception(function() use ($agent) { $this->testedInstance->giveKey($agent); })
-					->isInstanceOf('jobs\objects\lock\exception')
-					->hasMessage('I have no key')
+				->object($this->testedInstance->agentUnlock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
+				->variable($locked)->isNull
 
-			->if($this->testedInstance->takeKey($key = new objects\key()))
+			->if($this->calling($agent)->insertKeyIn = function($lock, $callable) use ($key) { $callable($key); })
 			->then
-				->object($this->testedInstance->giveKey($agent))->isTestedInstance
-				->mock($agent)->call('takeKey')->withArguments($key)->once
+				->object($this->testedInstance->agentUnlock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
+				->variable($locked)->isNull
 
-				->exception(function() use ($agent) { $this->testedInstance->giveKey($agent); })
-					->isInstanceOf('jobs\objects\lock\exception')
-					->hasMessage('I have no key')
-		;
-	}
-
-	public function testIfKeyMatch()
-	{
-		$this
-			->given($this->newTestedInstance(new objects\key()))
+			->if($this->calling($key)->ifEqualTo = function($key, $callable) { $callable(); })
 			->then
-				->object($this->testedInstance->ifKeyMatch(function() {}))->isTestedInstance
-
-			->given($this->testedInstance->takeKey($insertedKey = new objects\key()))
-			->then
-				->object($this->testedInstance->ifKeyMatch(function() use (& $unlocked) { $unlocked = true; }))->isTestedInstance
-				->variable($unlocked)->isNull
-
-			->if($this->calling($insertedKey)->ifEqualTo = function($comparable, $callable) { $callable(); })
-			->then
-				->object($this->testedInstance->ifKeyMatch(function() use (& $unlocked) { $unlocked = true; }))->isTestedInstance
-				->boolean($unlocked)->isTrue
+				->object($this->testedInstance->agentUnlock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
+				->boolean($locked)->isTrue
+				->mock($agent)->call('takeKey')->withIdenticalArguments($this->testedInstance, $key)->once
 		;
 	}
 }

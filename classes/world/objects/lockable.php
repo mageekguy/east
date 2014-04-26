@@ -6,7 +6,8 @@ use
 	jobs\world\objects\key
 ;
 
-interface lockable extends key\aggregator
+interface lockable
 {
-	public function ifKeyMatch(callable $callable);
+	public function agentLock(key\agent $agent, callable $callable);
+	public function agentUnlock(key\agent $agent, callable $callable);
 }

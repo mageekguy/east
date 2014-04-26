@@ -9,7 +9,7 @@ use
 	jobs\world\objects
 ;
 
-class lockable extends box
+class lockable extends box implements objects\lockable
 {
 	private $lock = null;
 
@@ -22,14 +22,42 @@ class lockable extends box
 
 	public function userOpen(objects\box\user $user, callable $callable)
 	{
-		$user->unlock($this->lock, $callable);
+		$this->agentUnlock($user, $callable);
 
 		return $this;
 	}
 
 	public function userClose(objects\box\user $user, callable $callable)
 	{
-		$user->lock($this->lock, $callable);
+		$this->agentLock($user, $callable);
+
+		return $this;
+	}
+
+	public function takeKey(world\objects\key $key, callable $callable)
+	{
+		$this->lock->takeKey($key, $callable);
+
+		return $this;
+	}
+
+	public function giveKey(world\objects\key\aggregator $aggregator, callable $callable)
+	{
+		$this->lock->giveKey($aggregator, $callable);
+
+		return $this;
+	}
+
+	public function agentLock(world\objects\key\agent $agent, callable $callable)
+	{
+		$this->lock->agentLock($agent, $callable);
+
+		return $this;
+	}
+
+	public function agentUnlock(world\objects\key\agent $agent, callable $callable)
+	{
+		$this->lock->agentLock($agent, $callable);
 
 		return $this;
 	}
