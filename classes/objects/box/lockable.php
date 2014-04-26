@@ -34,20 +34,6 @@ class lockable extends box implements objects\lockable
 		return $this;
 	}
 
-	public function takeKey(world\objects\key $key, callable $callable)
-	{
-		$this->lock->takeKey($key, $callable);
-
-		return $this;
-	}
-
-	public function giveKey(world\objects\key\aggregator $aggregator, callable $callable)
-	{
-		$this->lock->giveKey($aggregator, $callable);
-
-		return $this;
-	}
-
 	public function agentLock(world\objects\key\agent $agent, callable $callable)
 	{
 		$this->lock->agentLock($agent, $callable);
