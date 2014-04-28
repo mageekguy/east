@@ -5,6 +5,7 @@ namespace jobs\tests\units\collections;
 require __DIR__ . '/../../runner.php';
 
 use
+	jobs\boolean,
 	mock\jobs\world\comparable
 ;
 
@@ -23,12 +24,12 @@ class dictionary extends \atoum
 				->object($this->testedInstance->add($comparable1 = new comparable(), uniqid()))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
 
-			->if($this->calling($comparable1)->ifEqualTo = function($comparable, $callable) { $callable(); })
+			->if($this->calling($comparable1)->isEqualTo = new boolean\true())
 			->then
 				->object($this->testedInstance->add($comparable1, uniqid()))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
 
-			->if($this->calling($comparable1)->ifEqualTo->doesNothing)
+			->if($this->calling($comparable1)->isEqualTo = new boolean\false())
 			->then
 				->object($this->testedInstance->add($comparable2 = new comparable(), uniqid()))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(2)
@@ -44,9 +45,9 @@ class dictionary extends \atoum
 				->sizeof($this->testedInstance)->isZero
 
 			->if(
-				$this->calling($comparable)->ifEqualTo->doesNothing,
+				$this->calling($comparable)->isEqualTo = new boolean\false(),
 				$this->testedInstance->add($comparable, uniqid()),
-				$this->calling($comparable)->ifEqualTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->isEqualTo = new boolean\true()
 			)
 			->then
 				->object($this->testedInstance->remove($comparable))->isTestedInstance
@@ -64,7 +65,7 @@ class dictionary extends \atoum
 
 			->if(
 				$this->testedInstance->add($comparable, $value = uniqid()),
-				$this->calling($comparable)->ifEqualTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->isEqualTo = new boolean\true()
 			)
 			->then
 				->object($this->testedInstance->apply($comparable, function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance

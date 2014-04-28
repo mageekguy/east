@@ -5,6 +5,7 @@ namespace jobs\tests\units\collections;
 require __DIR__ . '/../../runner.php';
 
 use
+	jobs\boolean,
 	mock\jobs\world
 ;
 
@@ -23,17 +24,17 @@ class bag extends \atoum
 				$comparable1 = new world\comparable()
 			)
 
-			->if($this->calling($comparable1)->ifIdenticalTo->doesNothing)
+			->if($this->calling($comparable1)->isIdenticalTo = new boolean\false())
 			->then
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
 
-			->if($this->calling($comparable1)->ifIdenticalTo = function($comparable, $callable) { $callable(); })
+			->if($this->calling($comparable1)->isIdenticalTo = new boolean\true())
 			->then
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
 
-			->if($this->calling($comparable1)->ifIdenticalTo->doesNothing)
+			->if($this->calling($comparable1)->isIdenticalTo = new boolean\false())
 			->then
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(2)
@@ -49,18 +50,18 @@ class bag extends \atoum
 				->sizeof($this->testedInstance)->isZero
 
 			->if(
-				$this->calling($comparable)->ifIdenticalTo->doesNothing,
+				$this->calling($comparable)->isIdenticalTo = new boolean\false(),
 				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->ifIdenticalTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->isIdenticalTo = new boolean\true()
 			)
 			->then
 				->object($this->testedInstance->remove($comparable))->isTestedInstance
 				->sizeof($this->testedInstance)->isZero
 
 			->if(
-				$this->calling($comparable)->ifIdenticalTo->doesNothing,
+				$this->calling($comparable)->isIdenticalTo = new boolean\false(),
 				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->ifIdenticalTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->isIdenticalTo = new boolean\true()
 			)
 			->then
 				->object($this->testedInstance->remove($comparable, function($comparable) use (& $removedComparable) { $removedComparable = $comparable; }))->isTestedInstance
@@ -78,9 +79,15 @@ class bag extends \atoum
 				->sizeof($this->testedInstance)->isZero
 
 			->if(
+				$comparable0 = new world\comparable(),
+				$this->calling($comparable0)->isIdenticalTo = new boolean\false(),
+
+				$comparable1 = new world\comparable(),
+				$this->calling($comparable1)->isIdenticalTo = new boolean\false(),
+
 				$this->testedInstance
-					->add(new world\comparable())
-					->add(new world\comparable())
+					->add($comparable0)
+					->add($comparable1)
 			)
 			->then
 				->object($this->testedInstance->removeAt(0))->isTestedInstance
@@ -94,8 +101,8 @@ class bag extends \atoum
 
 			->if(
 				$this->testedInstance
-					->add(new world\comparable())
-					->add(new world\comparable())
+					->add($comparable0)
+					->add($comparable1)
 			)
 			->then
 				->object($this->testedInstance->removeAt(1))->isTestedInstance
@@ -106,8 +113,8 @@ class bag extends \atoum
 
 			->if(
 				$this->testedInstance
-					->add($comparable0 = new world\comparable())
-					->add($comparable1 = new world\comparable())
+					->add($comparable0)
+					->add($comparable1)
 			)
 			->then
 				->object($this->testedInstance->removeAt(0, function($comparable) use (& $removedComparable0) { $removedComparable0 = $comparable; }))->isTestedInstance
@@ -133,9 +140,15 @@ class bag extends \atoum
 				->sizeof($this->testedInstance)->isZero
 
 			->if(
+				$comparable0 = new world\comparable(),
+				$this->calling($comparable0)->isIdenticalTo = new boolean\false(),
+
+				$comparable1 = new world\comparable(),
+				$this->calling($comparable1)->isIdenticalTo = new boolean\false(),
+
 				$this->testedInstance
-					->add(new world\comparable())
-					->add(new world\comparable())
+					->add($comparable0)
+					->add($comparable1)
 			)
 			->then
 				->object($this->testedInstance->removeLast())->isTestedInstance
@@ -146,8 +159,8 @@ class bag extends \atoum
 
 			->if(
 				$this->testedInstance
-					->add($comparable0 = new world\comparable())
-					->add($comparable1 = new world\comparable())
+					->add($comparable0)
+					->add($comparable1)
 			)
 			->then
 				->object($this->testedInstance->removeLast(function($comparable) use (& $removedComparable) { $removedComparable = $comparable; }))->isTestedInstance
@@ -159,10 +172,12 @@ class bag extends \atoum
 				->object($removedComparable)->isEqualTo($comparable0)
 
 			->if(
+				$comparable2 = new world\comparable(),
+				$this->calling($comparable2)->isIdenticalTo = new boolean\false(),
 				$this->testedInstance
-					->add($comparable0 = new world\comparable())
-					->add($comparable1 = new world\comparable())
-					->add($comparable2 = new world\comparable())
+					->add($comparable0)
+					->add($comparable1)
+					->add($comparable2)
 			)
 			->then
 				->object($this->testedInstance->removeLast(function($comparable) use (& $removedComparables) { $removedComparables[] = $comparable; }, 2))->isTestedInstance
@@ -180,10 +195,19 @@ class bag extends \atoum
 				->sizeof($this->testedInstance)->isZero
 
 			->if(
+				$comparable0 = new world\comparable(),
+				$this->calling($comparable0)->isIdenticalTo = new boolean\false(),
+
+				$comparable1 = new world\comparable(),
+				$this->calling($comparable1)->isIdenticalTo = new boolean\false(),
+
+				$comparable2 = new world\comparable(),
+				$this->calling($comparable2)->isIdenticalTo = new boolean\false(),
+
 				$this->testedInstance
-					->add(new world\comparable())
-					->add(new world\comparable())
-					->add(new world\comparable())
+					->add($comparable0)
+					->add($comparable1)
+					->add($comparable2)
 			)
 			->then
 				->object($this->testedInstance->removeAll())->isTestedInstance
@@ -191,9 +215,9 @@ class bag extends \atoum
 
 			->if(
 				$this->testedInstance
-					->add($comparable0 = new world\comparable())
-					->add($comparable1 = new world\comparable())
-					->add($comparable2 = new world\comparable())
+					->add($comparable0)
+					->add($comparable1)
+					->add($comparable2)
 			)
 			->then
 				->object($this->testedInstance->removeAll(function($comparable) use (& $removedComparables) { $removedComparables[] = $comparable; }))->isTestedInstance
@@ -229,15 +253,15 @@ class bag extends \atoum
 				->boolean($contains)->isFalse
 
 			->if(
-				$this->calling($comparable)->ifIdenticalTo->doesNothing,
+				$this->calling($comparable)->isIdenticalTo = new boolean\false(),
 				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->ifIdenticalTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->isIdenticalTo = new boolean\true()
 			)
 			->then
 				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
 				->boolean($contains)->isTrue
 
-			->if($this->calling($comparable)->ifIdenticalTo->doesNothing)
+			->if($this->calling($comparable)->isIdenticalTo = new boolean\false())
 			->then
 				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
 				->boolean($contains)->isFalse

@@ -5,6 +5,7 @@ namespace jobs\tests\units\objects;
 require __DIR__ . '/../../runner.php';
 
 use
+	jobs\boolean,
 	mock\jobs\world\object,
 	mock\jobs\world\objects
 ;
@@ -16,8 +17,7 @@ class box extends \atoum
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->userOpen(new objects\box\user(), function() use (& $isOpen) { $isOpen = true; }))->isTestedInstance
-				->boolean($isOpen)->isTrue
+				->object($this->testedInstance->userOpen(new objects\box\user()))->isEqualTo(new boolean\true())
 		;
 	}
 
@@ -26,17 +26,25 @@ class box extends \atoum
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->userClose(new objects\box\user(), function() use (& $isClose) { $isClose = true; }))->isTestedInstance
-				->boolean($isClose)->isTrue
+				->object($this->testedInstance->userClose(new objects\box\user()))->isEqualTo(new boolean\true())
 		;
 	}
 
 	public function testUserAdd()
 	{
 		$this
-			->given($this->newTestedInstance)
+			->given(
+				$this->newTestedInstance,
+				$user = new objects\box\user()
+			)
+
+			->if($this->calling($user)->openBox = new boolean\false())
 			->then
-				->object($this->testedInstance->userAdd(new objects\box\user(), new object()))->isTestedInstance
+				->object($this->testedInstance->userAdd($user, new object()))->isTestedInstance
+
+			->if($this->calling($user)->openBox = $true = new boolean\true())
+			->then
+				->object($this->testedInstance->userAdd($user, new object()))->isTestedInstance
 		;
 	}
 
@@ -48,8 +56,10 @@ class box extends \atoum
 				$user = new objects\box\user()
 			)
 
-			->if($this->calling($user)->openBox = function($box, $callable) { $callable(); })
+			->if($this->calling($user)->openBox = new boolean\false())
 			->then
+				->object($this->testedInstance->userRemove($user, 1))->isTestedInstance
+
 				->object($this->testedInstance->userRemove($user, 1))->isTestedInstance
 
 				->object($this->testedInstance->userRemove($user, 1, function($object) use (& $removedObject) { $removedObject = $object; }))->isTestedInstance
@@ -58,38 +68,39 @@ class box extends \atoum
 				->if($this->testedInstance->userAdd($user, $object = new object()))
 				->then
 					->object($this->testedInstance->userRemove($user, 1, function($object) use (& $removedObject) { $removedObject = $object; }))->isTestedInstance
-					->object($removedObject)->isIdenticalTo($object)
+					->variable($removedObject)->isNull
 
-				->if(
-					$this->testedInstance
-						->userAdd($user, $object0 = new object())
-						->userAdd($user, $object1 = new object())
-						->userAdd($user, $object2 = new object())
-				)
-				->then
-					->object($this->testedInstance->userRemove($user, 1, function($object) use (& $removedObject) { $removedObject = $object; }))->isTestedInstance
-					->object($removedObject)->isIdenticalTo($object2)
+			->if($this->calling($user)->openBox = $true = new boolean\true())
+			->then
+				->object($this->testedInstance->userRemove($user, 1, function($object) use (& $removedObject) { $removedObject = $object; }))->isTestedInstance
+				->variable($removedObject)->isNull
 
-					->object($this->testedInstance->userRemove($user, 2, function($object) use (& $removedObjects) { $removedObjects[] = $object; }))->isTestedInstance
-					->array($removedObjects)->isIdenticalTo([ $object1, $object0 ])
+			->if($this->testedInstance->userAdd($user, $object = new object()))
+			->then
+				->object($this->testedInstance->userRemove($user, 1, function($object) use (& $removedObject) { $removedObject = $object; }))->isTestedInstance
+				->object($removedObject)->isIdenticalTo($object)
 
 			->if(
+				$object0 = new object(),
+				$this->calling($object0)->isIdenticalTo = new boolean\false(),
+
+				$object1 = new object(),
+				$this->calling($object1)->isIdenticalTo = new boolean\false(),
+
+				$object2 = new object(),
+				$this->calling($object2)->isIdenticalTo = new boolean\false(),
+
 				$this->testedInstance
-					->userAdd($user, $object0 = new object())
-					->userAdd($user, $object1 = new object())
-					->userAdd($user, $object2 = new object()),
-				$this->calling($user)->openBox->doesNothing
+					->userAdd($user, $object0)
+					->userAdd($user, $object1)
+					->userAdd($user, $object2)
 			)
 			->then
-				->object($this->testedInstance->userRemove($user, 1))->isTestedInstance
+				->object($this->testedInstance->userRemove($user, 1, function($object) use (& $removedObject) { $removedObject = $object; }))->isTestedInstance
+				->object($removedObject)->isIdenticalTo($object2)
 
-				->if($this->testedInstance->userAdd($user, $object = new object()))
-				->then
-					->object($this->testedInstance->userRemove($user, 1, function($object) use (& $notRemovedObject) { $notRemovedObject = $object; }))->isTestedInstance
-					->variable($notRemovedObject)->isNull
-
-					->object($this->testedInstance->userRemove($user, 2, function($object) use (& $notRemovedObjects) { $notRemovedObjects[] = $object; }))->isTestedInstance
-					->variable($notRemovedObjects)->isNull
+				->object($this->testedInstance->userRemove($user, 2, function($object) use (& $removedObjects) { $removedObjects[] = $object; }))->isTestedInstance
+				->array($removedObjects)->isIdenticalTo([ $object1, $object0 ])
 		;
 	}
 
@@ -100,22 +111,34 @@ class box extends \atoum
 				$this->newTestedInstance,
 				$user = new objects\box\user()
 			)
-			->if($this->calling($user)->openBox = function($box, $callable) { $callable(); })
+
+			->if($this->calling($user)->openBox = new boolean\false())
 			->then
 				->object($this->testedInstance->userRemoveAll($user))->isTestedInstance
 
 				->object($this->testedInstance->userRemoveAll($user, function($object) use (& $removedObjects) { $removedObjects[] = $object; }))->isTestedInstance
 				->variable($removedObjects)->isNull
 
-				->if(
-					$this->testedInstance
-						->userAdd($user, $object0 = new object())
-						->userAdd($user, $object1 = new object())
-						->userAdd($user, $object2 = new object())
-				)
-				->then
-					->object($this->testedInstance->userRemoveAll($user, function($object) use (& $removedObjects) { $removedObjects[] = $object; }))->isTestedInstance
-					->array($removedObjects)->isIdenticalTo([ $object0, $object1, $object2 ])
+			->if(
+				$this->calling($user)->openBox = new boolean\true(),
+
+				$object0 = new object(),
+				$this->calling($object0)->isIdenticalTo = new boolean\false(),
+
+				$object1 = new object(),
+				$this->calling($object1)->isIdenticalTo = new boolean\false(),
+
+				$object2 = new object(),
+				$this->calling($object2)->isIdenticalTo = new boolean\false(),
+
+				$this->testedInstance
+					->userAdd($user, $object0)
+					->userAdd($user, $object1)
+					->userAdd($user, $object2)
+			)
+			->then
+				->object($this->testedInstance->userRemoveAll($user, function($object) use (& $removedObjects) { $removedObjects[] = $object; }))->isTestedInstance
+				->array($removedObjects)->isIdenticalTo([ $object0, $object1, $object2 ])
 		;
 	}
 }

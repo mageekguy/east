@@ -5,6 +5,7 @@ namespace jobs\tests\units\objects;
 require __DIR__ . '/../../runner.php';
 
 use
+	jobs\boolean,
 	mock\jobs\world,
 	mock\jobs\world\objects
 ;
@@ -16,7 +17,7 @@ class key extends \atoum
 		$this->testedClass->implements('jobs\world\objects\key');
 	}
 
-	public function testIfEqualTo()
+	public function testIsEqualTo()
 	{
 		$this
 			->given(
@@ -24,18 +25,13 @@ class key extends \atoum
 				$key = new objects\key()
 			)
 			->then
-				->object($this->testedInstance->ifEqualTo($key, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
-				->variable($isEqualTo)->isNull
-
-				->object($this->testedInstance->ifEqualTo($this->testedInstance, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
-				->boolean($isEqualTo)->isTrue
-
-				->object($this->testedInstance->ifEqualTo(clone $this->testedInstance, function() use (& $cloneIsEqualTo) { $cloneIsEqualTo = true; }))->isTestedInstance
-				->boolean($cloneIsEqualTo)->isTrue
+				->object($this->testedInstance->isEqualTo($key))->isEqualTo(new boolean\false())
+				->object($this->testedInstance->isEqualTo($this->testedInstance))->isEqualTo(new boolean\true())
+				->object($this->testedInstance->isEqualTo(clone $this->testedInstance))->isEqualTo(new boolean\true())
 		;
 	}
 
-	public function testIfIdenticalTo()
+	public function testIsIdenticalTo()
 	{
 		$this
 			->given(
@@ -43,11 +39,9 @@ class key extends \atoum
 				$key = new objects\key()
 			)
 			->then
-				->object($this->testedInstance->ifIdenticalTo($key, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
-				->variable($isEqualTo)->isNull
-
-				->object($this->testedInstance->ifIdenticalTo($this->testedInstance, function() use (& $isEqualTo) { $isEqualTo = true; }))->isTestedInstance
-				->boolean($isEqualTo)->isTrue
+				->object($this->testedInstance->isIdenticalTo($key))->isEqualTo(new boolean\false())
+				->object($this->testedInstance->isIdenticalTo($this->testedInstance))->isEqualTo(new boolean\true())
+				->object($this->testedInstance->isIdenticalTo(clone $this->testedInstance))->isEqualTo(new boolean\false())
 		;
 	}
 }

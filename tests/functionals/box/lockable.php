@@ -5,6 +5,7 @@ namespace jobs\tests\functionals\box;
 require __DIR__ . '/../runner.php';
 
 use
+	jobs,
 	jobs\world,
 	jobs\objects\key,
 	jobs\objects\box\lockable
@@ -26,24 +27,14 @@ class object implements world\object
 		return 'object ' . $this->name;
 	}
 
-	public function ifEqualTo(world\comparable $object, callable $callable)
+	public function isEqualTo(world\comparable $object)
 	{
-		if ($this == $object)
-		{
-			$callable();
-		}
-
-		return $this;
+		return new jobs\boolean($this == $object);
 	}
 
-	public function ifIdenticalTo(world\comparable $object, callable $callable)
+	public function isIdenticalTo(world\comparable $object)
 	{
-		if ($this === $object)
-		{
-			$callable();
-		}
-
-		return $this;
+		return new jobs\boolean($this === $object);
 	}
 }
 
@@ -77,25 +68,27 @@ class user implements world\objects\box\user
 		return $this;
 	}
 
-	public function openBox(world\objects\box $box, callable $callable = null)
+	public function openBox(world\objects\box $box)
 	{
-		$box->userOpen($this, $callable);
-
-		return $this;
+		return $box->userOpen($this)
+			->ifTrue(function() { echo 'Box open!' . PHP_EOL; })
+			->ifFalse(function() { echo 'Unable to open box!' . PHP_EOL; })
+		;
 	}
 
-	public function closeBox(world\objects\box $box, callable $callable = null)
+	public function closeBox(world\objects\box $box)
 	{
-		$box->userClose($this, $callable);
-
-		return $this;
+		return $box->userClose($this);
 	}
 
-	public function insertKeyIn(world\objects\lockable $lockable, callable $callable)
+	public function lock(world\objects\lockable $lockable)
 	{
-		$callable($this->key);
+		return $lockable->agentLock($this, $this->key);
+	}
 
-		return $this;
+	public function unlock(world\objects\lockable $lockable)
+	{
+		return $lockable->agentLock($this, $this->key);
 	}
 }
 
@@ -119,15 +112,15 @@ $lockable
 $user->takeKey($lockable, $badKey);
 
 $lockable
-	->userRemove($user, 1, function($object) { echo $object . PHP_EOL; })
-	->userRemove($user, 2, function($object) { echo $object . PHP_EOL; })
-	->userRemoveAll($user, function($object) { echo $object . PHP_EOL; })
+	->userRemove($user, 1, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userRemove($user, 2, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userRemoveAll($user, function($object) { echo 'Remove ' . $object . PHP_EOL; })
 ;
 
 $user->takeKey($lockable, $goodKey);
 
 $lockable
-	->userRemove($user, 1, function($object) { echo $object . PHP_EOL; })
-	->userRemove($user, 2, function($object) { echo $object . PHP_EOL; })
-	->userRemoveAll($user, function($object) { echo $object . PHP_EOL; })
+	->userRemove($user, 1, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userRemove($user, 2, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userRemoveAll($user, function($object) { echo 'Remove ' . $object . PHP_EOL; })
 ;

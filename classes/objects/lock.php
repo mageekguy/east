@@ -15,33 +15,25 @@ class lock implements world\objects\lockable
 		$this->key = $key;
 	}
 
-	public function agentLock(world\objects\key\agent $agent, callable $callable)
+	public function agentLock(world\objects\key\agent $agent, world\objects\key $key)
 	{
-		$agent->insertKeyIn($this, function($key) use ($agent, $callable) {
-				$key->ifEqualTo($this->key, function() use ($agent, $key, $callable) {
-						$callable();
-
+		return $key
+			->isEqualTo($this->key)
+				->ifTrue(function() use ($agent, $key) {
 						$agent->takeKey($this, $key);
 					}
-				);
-			}
-		);
-
-		return $this;
+				)
+		;
 	}
 
-	public function agentUnlock(world\objects\key\agent $agent, callable $callable)
+	public function agentUnlock(world\objects\key\agent $agent, world\objects\key $key)
 	{
-		$agent->insertKeyIn($this, function($key) use ($agent, $callable) {
-				$key->ifEqualTo($this->key, function() use ($agent, $key, $callable) {
-						$callable();
-
+		return $key
+			->isEqualTo($this->key)
+				->ifTrue(function() use ($agent, $key) {
 						$agent->takeKey($this, $key);
 					}
-				);
-			}
-		);
-
-		return $this;
+				)
+		;
 	}
 }

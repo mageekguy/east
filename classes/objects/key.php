@@ -3,7 +3,8 @@
 namespace jobs\objects;
 
 use
-	jobs\world
+	jobs\world,
+	jobs\boolean
 ;
 
 class key implements world\objects\key
@@ -15,23 +16,23 @@ class key implements world\objects\key
 		$this->fingerprint = uniqid();
 	}
 
-	public function ifEqualTo(world\comparable $comparable, callable $callable)
+	public function isEqualTo(world\comparable $comparable)
 	{
 		if ($comparable == $this)
 		{
-			$callable();
+			return new boolean\true();
 		}
 
-		return $this;
+		return new boolean\false();
 	}
 
-	public function ifIdenticalTo(world\comparable $comparable, callable $callable)
+	public function isIdenticalTo(world\comparable $comparable)
 	{
 		if ($comparable === $this)
 		{
-			$callable();
+			return new boolean\true();
 		}
 
-		return $this;
+		return new boolean\false();
 	}
 }

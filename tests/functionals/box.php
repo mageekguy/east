@@ -5,6 +5,7 @@ namespace jobs\tests\functionals;
 require __DIR__ . '/runner.php';
 
 use
+	jobs,
 	jobs\world,
 	jobs\objects\box
 ;
@@ -25,59 +26,45 @@ class object implements world\object
 		return 'object ' . $this->name;
 	}
 
-	public function ifEqualTo(world\comparable $object, callable $callable)
+	public function isEqualTo(world\comparable $object)
 	{
-		if ($this == $object)
-		{
-			$callable();
-		}
-
-		return $this;
+		return new jobs\boolean($this == $object);
 	}
 
-	public function ifIdenticalTo(world\comparable $object, callable $callable)
+	public function isIdenticalTo(world\comparable $object)
 	{
-		if ($this === $object)
-		{
-			$callable();
-		}
-
-		return $this;
+		return new jobs\boolean($this === $object);
 	}
 }
 
 class user implements world\objects\box\user
 {
-	public function takeKey(world\objects\key $key)
+	public function takeKey(world\objects\lockable $lockable, world\objects\key $key)
 	{
 		return $this;
 	}
 
-	public function giveKey(world\objects\key\aggregator $aggregator)
+	public function giveKey(world\objects\lockable $lockable, world\objects\key\aggregator $aggregator)
 	{
 		return $this;
 	}
 
-	public function openBox(world\objects\box $box, callable $callable = null)
+	public function openBox(world\objects\box $box)
 	{
-		$box->userOpen($this, $callable);
-
-		return $this;
+		return $box->userOpen($this);
 	}
 
-	public function closeBox(world\objects\box $box, callable $callable = null)
+	public function closeBox(world\objects\box $box)
 	{
-		$box->userClose($this, $callable);
-
-		return $this;
+		return $box->userClose($this);
 	}
 
-	public function lock(world\objects\lockable $lockable, callable $callable)
+	public function lock(world\objects\lockable $lockable)
 	{
 		return $this;
 	}
 
-	public function unlock(world\objects\lockable $lockable, callable $callable)
+	public function unlock(world\objects\lockable $lockable)
 	{
 		return $this;
 	}
@@ -91,7 +78,7 @@ $user = new user();
 	->userAdd($user, new object())
 	->userAdd($user, new object())
 	->userAdd($user, new object())
-	->userRemove($user, 1, function($object) { echo $object . PHP_EOL; })
-	->userRemove($user, 2, function($object) { echo $object . PHP_EOL; })
-	->userRemoveAll($user, function($object) { echo $object . PHP_EOL; })
+	->userRemove($user, 1, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userRemove($user, 2, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userRemoveAll($user, function($object) { echo 'Remove ' . $object . PHP_EOL; })
 ;

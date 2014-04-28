@@ -25,10 +25,13 @@ class bag implements world\collections\bag
 	{
 		$this->comparables
 			->walk(function($innerComparable, $key) use ($comparable, $containsCallable) {
-					$innerComparable->ifIdenticalTo($comparable, function() use ($innerComparable, $key, $containsCallable) {
-							$containsCallable($innerComparable, $key); $this->comparables->stop();
-						}
-					);
+					$innerComparable
+						->isIdenticalTo($comparable)
+							->ifTrue(function() use ($innerComparable, $key, $containsCallable) {
+									$containsCallable($innerComparable, $key); $this->comparables->stop();
+								}
+							)
+					;
 				}
 			)
 			->ifNotStopped($notContainsCallable ?: function() {});

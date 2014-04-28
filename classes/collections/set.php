@@ -12,12 +12,15 @@ class set extends collections\bag implements world\collections\set
 	public function ifContains(world\comparable $comparable, callable $containsCallable, callable $notContainsCallable = null)
 	{
 		return parent::walk(function($innerComparable, $key) use ($comparable, $containsCallable) {
-					$innerComparable->ifEqualTo($comparable, function() use ($innerComparable, $key, $containsCallable) {
-							$containsCallable($innerComparable, $key);
+					$innerComparable
+						->isEqualTo($comparable)
+							->ifTrue(function() use ($innerComparable, $key, $containsCallable) {
+									$containsCallable($innerComparable, $key);
 
-							$this->stop();
-						}
-					);
+									$this->stop();
+								}
+							)
+					;
 				}
 			)
 			->ifNotStopped($notContainsCallable ?: function() {})

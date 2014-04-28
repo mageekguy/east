@@ -5,6 +5,7 @@ namespace jobs\tests\units\collections;
 require __DIR__ . '/../../runner.php';
 
 use
+	jobs\boolean,
 	mock\jobs\world
 ;
 
@@ -23,17 +24,17 @@ class set extends \atoum
 				$comparable1 = new world\comparable()
 			)
 
-			->if($this->calling($comparable1)->ifEqualTo->doesNothing)
+			->if($this->calling($comparable1)->isEqualTo = new boolean\false())
 			->then
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
 
-			->if($this->calling($comparable1)->ifEqualTo = function($comparable, $callable) { $callable(); })
+			->if($this->calling($comparable1)->isEqualTo = new boolean\true())
 			->then
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(1)
 
-			->if($this->calling($comparable1)->ifEqualTo->doesNothing)
+			->if($this->calling($comparable1)->isEqualTo = new boolean\false())
 				->object($this->testedInstance->add($comparable1 = new world\comparable()))->isTestedInstance
 				->sizeof($this->testedInstance)->isEqualTo(2)
 		;
@@ -48,9 +49,9 @@ class set extends \atoum
 				->sizeof($this->testedInstance)->isZero
 
 			->if(
-				$this->calling($comparable)->ifEqualTo->doesNothing,
+				$this->calling($comparable)->isEqualTo = new boolean\false(),
 				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->ifEqualTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->isEqualTo = new boolean\true()
 			)
 			->then
 				->object($this->testedInstance->remove($comparable))->isTestedInstance
@@ -85,15 +86,15 @@ class set extends \atoum
 				->boolean($contains)->isFalse
 
 			->if(
-				$this->calling($comparable)->ifEqualTo->doesNothing,
+				$this->calling($comparable)->isEqualTo = new boolean\false(),
 				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->ifEqualTo = function($comparable, $callable) { $callable(); }
+				$this->calling($comparable)->isEqualTo = new boolean\true()
 			)
 			->then
 				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
 				->boolean($contains)->isTrue
 
-			->if($this->calling($comparable)->ifEqualTo->doesNothing)
+			->if($this->calling($comparable)->isEqualTo = new boolean\false())
 			->then
 				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
 				->boolean($contains)->isFalse

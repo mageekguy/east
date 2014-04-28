@@ -9,7 +9,6 @@ use
 
 interface aggregator
 {
-	public function takeKey(lockable $lockable, key $key, callable $callable = null);
-	public function giveKey(lockable $lockable, self $aggregator, callable $callable = null);
-	public function insertKeyIn(lockable $lockable, callable $callable);
+	public function takeKey(lockable $lockable, key $key);
+	public function giveKey(lockable $lockable, self $aggregator);
 }

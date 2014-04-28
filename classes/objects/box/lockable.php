@@ -20,31 +20,23 @@ class lockable extends box implements objects\lockable
 		$this->lock = new lock($key);
 	}
 
-	public function userOpen(objects\box\user $user, callable $callable)
+	public function userOpen(objects\box\user $user)
 	{
-		$this->agentUnlock($user, $callable);
-
-		return $this;
+		return $user->unlock($this);
 	}
 
-	public function userClose(objects\box\user $user, callable $callable)
+	public function userClose(objects\box\user $user)
 	{
-		$this->agentLock($user, $callable);
-
-		return $this;
+		return $user->lock($this);
 	}
 
-	public function agentLock(world\objects\key\agent $agent, callable $callable)
+	public function agentLock(world\objects\key\agent $agent, world\objects\key $key)
 	{
-		$this->lock->agentLock($agent, $callable);
-
-		return $this;
+		return $this->lock->agentLock($agent, $key);
 	}
 
-	public function agentUnlock(world\objects\key\agent $agent, callable $callable)
+	public function agentUnlock(world\objects\key\agent $agent, world\objects\key $key)
 	{
-		$this->lock->agentLock($agent, $callable);
-
-		return $this;
+		return $this->lock->agentLock($agent, $key);
 	}
 }

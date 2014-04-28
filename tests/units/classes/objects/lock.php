@@ -5,6 +5,7 @@ namespace jobs\tests\units\objects;
 require __DIR__ . '/../../runner.php';
 
 use
+	jobs\boolean,
 	mock\jobs\world\objects,
 	mock\jobs\world\objects\key\agent
 ;
@@ -24,23 +25,14 @@ class lock extends \atoum
 				$agent = new agent()
 			)
 
-			->if(
-				$this->calling($agent)->insertKeyIn->doesNothing,
-				$this->calling($key)->ifEqualTo->doesNothing
-			)
+			->if($this->calling($key)->isEqualTo = $false = new boolean\false)
 			->then
-				->object($this->testedInstance->agentLock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
-				->variable($locked)->isNull
+				->object($this->testedInstance->agentLock($agent, $key))->isIdenticalTo($false)
+				->mock($agent)->call('takeKey')->never
 
-			->if($this->calling($agent)->insertKeyIn = function($lock, $callable) use ($key) { $callable($key); })
+			->if($this->calling($key)->isEqualTo = $true = new boolean\true)
 			->then
-				->object($this->testedInstance->agentLock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
-				->variable($locked)->isNull
-
-			->if($this->calling($key)->ifEqualTo = function($key, $callable) { $callable(); })
-			->then
-				->object($this->testedInstance->agentLock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
-				->boolean($locked)->isTrue
+				->object($this->testedInstance->agentLock($agent, $key))->isIdenticalTo($true)
 				->mock($agent)->call('takeKey')->withIdenticalArguments($this->testedInstance, $key)->once
 		;
 	}
@@ -53,23 +45,14 @@ class lock extends \atoum
 				$agent = new agent()
 			)
 
-			->if(
-				$this->calling($agent)->insertKeyIn->doesNothing,
-				$this->calling($key)->ifEqualTo->doesNothing
-			)
+			->if($this->calling($key)->isEqualTo = $false = new boolean\false)
 			->then
-				->object($this->testedInstance->agentUnlock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
-				->variable($locked)->isNull
+				->object($this->testedInstance->agentUnlock($agent, $key))->isIdenticalTo($false)
+				->mock($agent)->call('takeKey')->never
 
-			->if($this->calling($agent)->insertKeyIn = function($lock, $callable) use ($key) { $callable($key); })
+			->if($this->calling($key)->isEqualTo = $true = new boolean\true)
 			->then
-				->object($this->testedInstance->agentUnlock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
-				->variable($locked)->isNull
-
-			->if($this->calling($key)->ifEqualTo = function($key, $callable) { $callable(); })
-			->then
-				->object($this->testedInstance->agentUnlock($agent, function() use (& $locked) { $locked = true; }))->isTestedInstance
-				->boolean($locked)->isTrue
+				->object($this->testedInstance->agentUnlock($agent, $key))->isIdenticalTo($true)
 				->mock($agent)->call('takeKey')->withIdenticalArguments($this->testedInstance, $key)->once
 		;
 	}
