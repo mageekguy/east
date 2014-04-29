@@ -57,8 +57,8 @@ class set extends units\test
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
 				->boolean($this->testedInstance->contains($comparable1))->isTrue
 				->boolean($this->testedInstance->contains($comparable2))->isTrue
+				->boolean($this->testedInstance->hasSize(1))->isTrue
 
-			->then
 				->object($this->testedInstance->add($comparable2))->isTestedInstance
 				->boolean($this->testedInstance->contains($comparable1))->isTrue
 				->boolean($this->testedInstance->contains($comparable2))->isTrue
