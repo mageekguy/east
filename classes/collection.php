@@ -32,15 +32,14 @@ class collection implements world\collection
 
 	public function remove($key, callable $callable = null)
 	{
-		return $this->apply($key, function($value) use ($key, $callable) {
-				if ($callable !== null)
-				{
-					$callable($value);
-				}
+		$this->apply($key, $callable ?: function() {});
 
-				unset($this->values[$key]);
-			}
-		);
+		if (isset($this->values[$key]) === true)
+		{
+			unset($this->values[$key]);
+		}
+
+		return $this;
 	}
 
 	public function removeLast(callable $callable = null, $number = 1)
@@ -59,7 +58,7 @@ class collection implements world\collection
 
 		foreach ($this->values as $key => $value)
 		{
-			call_user_func_array($callable, array($value, $key));
+			$callable($value, $key);
 
 			if ($this->stopped === true)
 			{
@@ -74,7 +73,7 @@ class collection implements world\collection
 	{
 		if (isset($this->values[$key]) === true)
 		{
-			call_user_func_array($callable, array($this->values[$key]));
+			$callable($this->values[$key]);
 		}
 
 		return $this;
@@ -100,8 +99,7 @@ class collection implements world\collection
 	private function getLastKey()
 	{
 		end($this->values);
-		$key = key($this->values);
 
-		return ($key === false ? null : $key);
+		return key($this->values);
 	}
 }
