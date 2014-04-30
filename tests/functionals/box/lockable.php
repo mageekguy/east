@@ -78,7 +78,10 @@ class user implements world\objects\box\user
 
 	public function closeBox(world\objects\box $box)
 	{
-		return $box->userClose($this);
+		return $box->userClose($this)
+			->ifTrue(function() { echo 'Box closed!' . PHP_EOL; })
+			->ifFalse(function() { echo 'Unable to close box!' . PHP_EOL; })
+		;
 	}
 
 	public function lock(world\objects\lockable $lockable)
