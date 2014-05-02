@@ -9,21 +9,47 @@ use
 
 class set extends collections\bag implements world\collections\set
 {
-	public function ifContains(world\comparable $comparable, callable $containsCallable, callable $notContainsCallable = null)
+	public function contains(world\comparable $comparable)
 	{
-		return parent::walk(function($innerComparable, $key) use ($comparable, $containsCallable) {
-					$innerComparable
-						->isEqualTo($comparable)
-							->ifTrue(function() use ($innerComparable, $key, $containsCallable) {
-									$containsCallable($innerComparable, $key);
+		return $this->walk(function($innerComparable) use ($comparable) {
+					return $comparable->isEqualTo($innerComparable)->not();
+				}
+			)
+				->not()
+		;
+	}
 
-									$this->stop();
+	public function remove(world\comparable $comparable)
+	{
+		$this
+			->filter(function($innerComparable) use ($comparable) {
+					return $comparable->isEqualTo($innerComparable)->not();
+				}
+			)
+		;
+
+		return $this;
+	}
+
+	public function applyOn(world\comparable $comparable, callable $callable)
+	{
+		return $this
+			->walk(function($innerComparable, $key) use ($comparable, & $innerKey, $callable) {
+					return $comparable
+						->isEqualTo($innerComparable)
+							->ifTrue(function() use (& $innerKey, $key) {
+									$innerKey = $key;
 								}
 							)
+								->not()
 					;
 				}
 			)
-			->ifNotStopped($notContainsCallable ?: function() {})
+				->not()
+					->ifTrue(function() use ($comparable, $innerKey, $callable) {
+							return $callable($comparable, $innerKey);
+						}
+					)
 		;
 	}
 }

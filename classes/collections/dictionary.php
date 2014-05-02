@@ -3,6 +3,7 @@
 namespace jobs\collections;
 
 use
+	jobs\boolean,
 	jobs\collection as valuesCollection,
 	jobs\collections\set as objectsCollection,
 	jobs\world\comparable,
@@ -20,76 +21,116 @@ class dictionary implements collections\dictionary
 		$this->values = new valuesCollection();
 	}
 
-	public function count()
+	public function hasSize($size)
 	{
-		return count($this->objects);
+		return $this->objects->hasSize($size);
+	}
+
+	public function isEmpty()
+	{
+		return $this->hasSize(0);
 	}
 
 	public function add(comparable $object, $value)
 	{
-		$this->objects->ifContains(
-			$object,
-			function($innerObject, $key) use ($value) {
-				$this->values->add($value, $key);
-			},
-			function() use ($object, $value) {
-				$this->objects->add($object);
-				$this->values->add($value);
-			}
-		);
+		$this
+			->objects
+				->applyOn($object, function($object, $key) use ($value) {
+						$this->values->add($value, $key);
+					}
+				)
+					->ifFalse(function() use ($object, $value) {
+							$this->objects->add($object);
+							$this->values->add($value);
+						}
+					)
+		;
 
 		return $this;
 	}
 
 	public function remove(comparable $object)
 	{
-		$this->objects->ifContains(
-			$object,
-			function($innerObject, $key) {
-				$this->objects->remove($innerObject);
-				$this->values->remove($key);
-			}
-		);
+		$this
+			->objects
+				->walk(function($innerObject, $key) use (& $keyValue, $object) {
+						return $object->isEqualTo($innerObject)
+							->ifTrue(function() use (& $keyValue, $key) {
+									$keyValue  = $key;
+								}
+							)
+								->not();
+					}
+				)
+					->ifFalse(function() use ($keyValue, $object) {
+							$this->objects->remove($object);
+							$this->values->remove($keyValue);
+						}
+					)
+		;
 
 		return $this;
 	}
 
-	public function apply(comparable $comparable, callable $callable)
+	public function apply(comparable $object, callable $callable)
 	{
-		return $this->ifContains($comparable, $callable);
+		return $this
+			->objects
+				->isNotEmpty()
+					->ifTrue(function() use ($object, $callable) {
+							return $this
+								->objects
+									->walk(function($innerObject, $key) use (& $keyValue, $object, $callable) {
+											return $object
+												->isEqualTo($innerObject)
+													->ifTrue(function() use (& $keyValue, $key, $callable) {
+															$keyValue = $key;
+														}
+													)
+														->not()
+											;
+										}
+									)
+										->ifFalse(function() use ($keyValue, $callable) {
+												return $this->values->apply($keyValue, $callable);
+											}
+										)
+							;
+						}
+					)
+		;
 	}
 
-	public function ifContains(comparable $comparable, callable $containsCallable, callable $notContainsCallable = null)
+	public function contains($value)
 	{
-		$this->objects->ifContains($comparable, function($comparable, $key) use ($containsCallable) { $this->values->apply($key, $containsCallable); }, $notContainsCallable);
+		return $this
+			->values
+				->contains($comparable)
+		;
+	}
 
-		return $this;
+	public function containsAt($value, comparable $object)
+	{
+		return $this
+			->objects
+				->applyOn($object, function($object, $key) use ($value) {
+						return $this->values->containsAt($value, $key);
+					}
+				)
+		;
 	}
 
 	public function walk(callable $callable)
 	{
-		$this->values->walk(function($value, $key) use ($callable) {
-				$this->objects->apply($key, function($object) use ($value, $callable) {
-						call_user_func_array($callable, array($value, $object));
-					}
-				);
+		return $this->values->walk(function($value, $key) use ($callable) {
+				$this
+					->objects
+						->apply($key, function($object) use ($value, $callable) {
+								return $callable($value, $object);
+							}
+						)
+				;
 			}
 		);
-
-		return $this;
-	}
-
-	public function stop()
-	{
-		$this->values->stop();
-
-		return $this;
-	}
-
-	public function ifNotStopped(callable $callable)
-	{
-		$this->values->ifNotStopped($callable);
-
-		return $this;
 	}
 }

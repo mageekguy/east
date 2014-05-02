@@ -12,24 +12,48 @@ class boolean implements world\boolean
 
 	public function __construct($value)
 	{
-		$this->value = null;
+		if ($value instanceof world\boolean)
+		{
+			$value
+				->ifFalse(function() use (& $value) {
+					$value = false;
+				}
+			);
+		}
+
+		$this->value = ($value == true);
 	}
 
 	public function ifTrue(callable $callable)
 	{
-		if ($this->value == true && $callable() !== null)
-		{
-			return new self($return);
-		}
-
-		return $this;
+		return $this->ifIs(true, $callable);
 	}
 
 	public function ifFalse(callable $callable)
 	{
-		if ($this->value == false && $callable() !== null)
+		return $this->ifIs(false, $callable);
+	}
+
+	public function not()
+	{
+		$this->value = ! $this->value;
+
+		return $this;
+	}
+
+	private function ifIs($boolean, $callable, $reference = null)
+	{
+		if (($reference ?: $this->value) == $boolean)
 		{
-			return new self($return);
+			$return = $callable();
+
+			if ($return instanceof world\boolean)
+			{
+				$return
+					->ifTrue(function() { $this->value = true; })
+					->ifFalse(function() { $this->value = false; })
+				;
+			}
 		}
 
 		return $this;

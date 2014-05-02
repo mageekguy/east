@@ -29,7 +29,7 @@ class box implements objects\box
 		return new boolean\true();
 	}
 
-	public function userAdd(objects\box\user $user, world\object $object)
+	public function userAddObject(objects\box\user $user, world\object $object)
 	{
 		$user
 			->openBox($this)
@@ -42,12 +42,12 @@ class box implements objects\box
 		return $this;
 	}
 
-	public function userRemove(objects\box\user $user, $number, callable $callable = null)
+	public function userRemoveObject(objects\box\user $user)
 	{
 		$user
 			->openBox($this)
-				->ifTrue(function() use ($number, $callable) {
-						$this->objects->removeLast($callable, $number);
+				->ifTrue(function() {
+						$this->objects->removeLast();
 					}
 				)
 		;
@@ -55,12 +55,12 @@ class box implements objects\box
 		return $this;
 	}
 
-	public function userRemoveAll(objects\box\user $user, callable $callable = null)
+	public function userRemoveObjects(objects\box\user $user)
 	{
 		$user
 			->openBox($this)
-				->ifTrue(function() use ($callable) {
-						$this->objects->removeAll($callable);
+				->ifTrue(function() {
+						$this->objects->removeAll();
 					}
 				)
 		;

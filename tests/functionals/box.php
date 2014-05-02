@@ -73,12 +73,12 @@ class user implements world\objects\box\user
 $user = new user();
 
 (new box())
-	->userAdd($user, new object())
-	->userAdd($user, new object())
-	->userAdd($user, new object())
-	->userAdd($user, new object())
-	->userAdd($user, new object())
-	->userRemove($user, 1, function($object) { echo 'Remove ' . $object . PHP_EOL; })
-	->userRemove($user, 2, function($object) { echo 'Remove ' . $object . PHP_EOL; })
-	->userRemoveAll($user, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userAddObject($user, new object())
+	->userAddObject($user, new object())
+	->userAddObject($user, new object())
+	->userAddObject($user, new object())
+	->userAddObject($user, new object())
+	->userRemoveObject($user)
+	->userRemoveObject($user)
+	->userRemoveObjects($user)
 ;

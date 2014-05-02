@@ -3,103 +3,163 @@
 namespace jobs;
 
 use
-	jobs\world
+	jobs\world,
+	jobs\boolean
 ;
 
 class collection implements world\collection
 {
-	private $stopped = false;
-	private $values = array();
+	private $values = [];
 
-	public function count()
+	public function isEmpty()
 	{
-		return count($this->values);
+		return $this->hasSize(0);
+	}
+
+	public function hasSize($size)
+	{
+		return new boolean(sizeof($this->values) == $size);
+	}
+
+	public function isNotEmpty()
+	{
+		return $this
+			->isEmpty()
+				->not()
+		;
 	}
 
 	public function add($value, $key = null)
 	{
-		if ($key === null)
-		{
-			$this->values[] = $value;
-		}
-		else
-		{
-			$this->values[$key] = $value;
-		}
+		(new boolean($key === null))
+			->ifTrue(function() use (& $key) {
+					$key = sizeof($this->values);
+				}
+			)
+		;
+
+		$this->values[$key] = $value;
 
 		return $this;
 	}
 
-	public function remove($key, callable $callable = null)
+	public function remove($key)
 	{
-		$this->apply($key, $callable ?: function() {});
-
-		if (isset($this->values[$key]) === true)
-		{
-			unset($this->values[$key]);
-		}
+		(new boolean(isset($this->values[$key])))
+			->ifTrue(function() use ($key) {
+					unset($this->values[$key]);
+				}
+			)
+		;
 
 		return $this;
 	}
 
-	public function removeLast(callable $callable = null, $number = 1)
+	public function removeLast()
 	{
-		while (($key = $this->getLastKey()) !== null && $number-- > 0)
-		{
-			$this->remove($key, $callable);
-		}
+		end($this->values);
 
-		return $this;
+		return $this->remove(key($this->values));
+	}
+
+	public function contains($value)
+	{
+		return $this
+			->walk(function($innerValue) use ($value) {
+					return new boolean($value != $innerValue);
+				}
+			)
+				->not()
+		;
+	}
+
+	public function containsAt($value, $key)
+	{
+		return $this
+			->walk(function($innerValue, $innerKey) use ($value, $key) {
+					return new boolean($innerKey != $key || $value != $innerValue);
+				}
+			)
+				->not()
+		;
 	}
 
 	public function walk(callable $callable)
 	{
-		$this->stopped = false;
+		return $this
+			->isEmpty()
+				->ifFalse(function() use ($callable) {
+						$break = false;
 
-		foreach ($this->values as $key => $value)
-		{
-			$callable($value, $key);
+						reset($this
+							->values
+						);
 
-			if ($this->stopped === true)
-			{
-				break;
-			}
-		}
+						while ($break === false && list($key, $value) = each($this->values))
+						{
+							$this
+								->executeIfBoolean($callable($value, $key), function($boolean) use (& $break) {
+										$boolean
+											->ifFalse(function() use (& $break) {
+													$break = true;
+												}
+											)
+										;
+									}
+								)
+							;
+						}
 
-		return $this;
+						return new boolean($break === false);
+					}
+				)
+		;
 	}
 
 	public function apply($key, callable $callable)
 	{
-		if (isset($this->values[$key]) === true)
+		return (new boolean(isset($this->values[$key])))
+			->ifTrue(function() use ($key, $callable) {
+					return $callable($this->values[$key], $key);
+				}
+			)
+		;
+	}
+
+	public function filter(callable $callable)
+	{
+		return $this
+			->isEmpty()
+				->ifFalse(function() use ($callable) {
+						$values = $this->values;
+						$this->values = [];
+
+						foreach ($values as $key => $value)
+						{
+							$this
+								->executeIfBoolean($callable($value, $key), function($boolean) use ($value, $key) {
+										$boolean->ifTrue(function() use ($value, $key) {
+												$this->add($value, $key);
+											}
+										);
+									}
+								)
+							;
+						}
+
+						return new boolean(sizeof($values) != sizeof($this->values));
+					}
+				)
+		;
+	}
+
+	private function executeIfBoolean($value, callable $booleanCallable)
+	{
+		if ($value instanceof boolean)
 		{
-			$callable($this->values[$key]);
+			$booleanCallable($value);
 		}
 
 		return $this;
-	}
-
-	public function stop()
-	{
-		$this->stopped = true;
-
-		return $this;
-	}
-
-	public function ifNotStopped(callable $callable)
-	{
-		if ($this->stopped === false)
-		{
-			$callable();
-		}
-
-		return $this;
-	}
-
-	private function getLastKey()
-	{
-		end($this->values);
-
-		return key($this->values);
 	}
 }

@@ -13,123 +13,126 @@ class bag implements world\collections\bag
 
 	public function __construct()
 	{
-		$this->init();
+		$this->comparables = new jobs\collection();
 	}
 
-	public function count()
+	public function isEmpty()
 	{
-		return sizeof($this->comparables);
+		return $this->comparables->isEmpty();
 	}
 
-	public function ifContains(world\comparable $comparable, callable $containsCallable, callable $notContainsCallable = null)
+	public function isNotEmpty()
 	{
-		$this->comparables
-			->walk(function($innerComparable, $key) use ($comparable, $containsCallable) {
-					$innerComparable
-						->isIdenticalTo($comparable)
-							->ifTrue(function() use ($innerComparable, $key, $containsCallable) {
-									$containsCallable($innerComparable, $key); $this->comparables->stop();
-								}
-							)
-					;
+		return $this->comparables->isNotEmpty();
+	}
+
+	public function hasSize($size)
+	{
+		return $this->comparables->hasSize($size);
+	}
+
+	public function contains(world\comparable $comparable)
+	{
+		return $this->walk(function($innerComparable) use ($comparable) {
+					return $comparable->isIdenticalTo($innerComparable)->not();
 				}
 			)
-			->ifNotStopped($notContainsCallable ?: function() {});
+				->not()
+		;
+	}
+
+	public function add(world\comparable $comparable)
+	{
+		$this
+			->contains($comparable)
+				->ifFalse(function() use ($comparable) {
+						$this->comparables->add($comparable);
+					}
+				)
 		;
 
 		return $this;
 	}
 
-	public function add(world\comparable $comparable)
+	public function remove(world\comparable $comparable)
 	{
-		return $this->ifContains($comparable, function() {}, function() use ($comparable) { $this->comparables->add($comparable); });
-	}
-
-	public function remove(world\comparable $comparable, callable $callable = null)
-	{
-		return $this->ifContains($comparable, function($innerComparable, $key) use ($callable) {
-				$this->removeAt($key, $callable);
-			}
-		);
-	}
-
-	public function removeAt($removedKey, callable $callable = null)
-	{
-		if ($callable !== null)
-		{
-			$this->apply($removedKey, $callable);
-		}
-
-		$this->init()->walk(function($comparable, $key) use ($removedKey) {
-				if ($key != $removedKey)
-				{
-					$this->comparables->add($comparable);
+		$this->comparables
+			->filter(function($innerComparable) use ($comparable) {
+					return $comparable->isIdenticalTo($innerComparable)->not();
 				}
-			}
-		);
+			)
+		;
 
 		return $this;
 	}
 
-	public function removeLast(callable $callable = null, $number = 1)
+	public function removeAt($removedKey)
 	{
-		$this->comparables->removeLast($callable, $number);
-
-		return $this;
-	}
-
-	public function removeAll(callable $callable = null)
-	{
-		$comparables = $this->init();
-
-		if ($callable !== null)
-		{
-			$comparables->walk(function($comparable, $key) use ($callable) {
-					if ($callable !== null)
-					{
-						$callable($comparable);
+		$this
+			->comparables
+				->filter(function($innerComparable, $key) use ($removedKey) {
+						return new jobs\boolean($removedKey != $key);
 					}
-				}
-			);
-		}
+				)
+		;
 
 		return $this;
+	}
+
+	public function removeLast()
+	{
+		$this->comparables->removeLast();
+
+		return $this;
+	}
+
+	public function removeAll()
+	{
+		$this
+			->comparables
+				->filter(function() {
+						return new jobs\boolean\false;
+					}
+				)
+		;
+
+		return $this;
+	}
+
+	public function filter(callable $callable)
+	{
+		return $this->comparables->filter($callable);
 	}
 
 	public function apply($key, callable $callable)
 	{
-		$this->comparables->apply($key, $callable);
+		return $this->comparables->apply($key, $callable);
+	}
 
-		return $this;
+	public function applyOn(world\comparable $comparable, callable $callable)
+	{
+		return $this
+			->walk(function($innerComparable, $key) use ($comparable, & $innerKey, $callable) {
+					return $comparable
+						->isIdenticalTo($innerComparable)
+							->ifTrue(function() use (& $innerKey, $key) {
+									$innerKey = $key;
+								}
+							)
+								->not()
+					;
+				}
+			)
+				->not()
+					->ifTrue(function() use ($comparable, $innerKey, $callable) {
+							return $callable($comparable, $innerKey);
+						}
+					)
+		;
 	}
 
 	public function walk(callable $callable)
 	{
-		$this->comparables->walk($callable);
-
-		return $this;
-	}
-
-	public function stop()
-	{
-		$this->comparables->stop();
-
-		return $this;
-	}
-
-	public function ifNotStopped(callable $callable)
-	{
-		$this->comparables->ifNotStopped($callable);
-
-		return $this;
-	}
-
-	private function init()
-	{
-		$comparables = $this->comparables;
-
-		$this->comparables = new jobs\collection();
-
-		return $comparables;
+		return $this->comparables->walk($callable);
 	}
 }

@@ -105,25 +105,25 @@ $lockable = (new lockable($goodKey));
 $user->takeKey($lockable, $goodKey);
 
 $lockable
-	->userAdd($user, new object())
-	->userAdd($user, new object())
-	->userAdd($user, new object())
-	->userAdd($user, new object())
-	->userAdd($user, new object())
+	->userAddObject($user, new object())
+	->userAddObject($user, new object())
+	->userAddObject($user, new object())
+	->userAddObject($user, new object())
+	->userAddObject($user, new object())
 ;
 
 $user->takeKey($lockable, $badKey);
 
 $lockable
-	->userRemove($user, 1, function($object) { echo 'Remove ' . $object . PHP_EOL; })
-	->userRemove($user, 2, function($object) { echo 'Remove ' . $object . PHP_EOL; })
-	->userRemoveAll($user, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userRemoveObject($user)
+	->userRemoveObject($user)
+	->userRemoveObjects($user)
 ;
 
 $user->takeKey($lockable, $goodKey);
 
 $lockable
-	->userRemove($user, 1, function($object) { echo 'Remove ' . $object . PHP_EOL; })
-	->userRemove($user, 2, function($object) { echo 'Remove ' . $object . PHP_EOL; })
-	->userRemoveAll($user, function($object) { echo 'Remove ' . $object . PHP_EOL; })
+	->userRemoveObject($user)
+	->userRemoveObject($user)
+	->userRemoveObjects($user)
 ;

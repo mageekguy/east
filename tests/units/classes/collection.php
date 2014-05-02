@@ -4,7 +4,11 @@ namespace jobs\tests\units;
 
 require __DIR__ . '/../runner.php';
 
-class collection extends \atoum
+use
+	jobs
+;
+
+class collection extends test
 {
 	public function testClass()
 	{
@@ -16,7 +20,59 @@ class collection extends \atoum
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->sizeof($this->testedInstance)->isZero
+				->boolean($this->testedInstance->isEmpty())->isTrue
+		;
+	}
+
+	public function testIsEmpty()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->boolean($this->testedInstance->isEmpty())->isTrue
+
+			->if($this->testedInstance->add(uniqid()))
+			->then
+				->boolean($this->testedInstance->isEmpty())->isFalse
+		;
+	}
+
+	public function testIsNotEmpty()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->boolean($this->testedInstance->isNotEmpty())->isFalse
+
+			->if($this->testedInstance->add(uniqid()))
+			->then
+				->boolean($this->testedInstance->isNotEmpty())->isTrue
+		;
+	}
+
+	public function testHasSize()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->boolean($this->testedInstance->hasSize(0))->isTrue
+				->boolean($this->testedInstance->hasSize(rand(- PHP_INT_MAX, -1)))->isFalse
+				->boolean($this->testedInstance->hasSize(rand(1, PHP_INT_MAX)))->isFalse
+
+			->if($this->testedInstance->add(uniqid()))
+			->then
+				->boolean($this->testedInstance->hasSize(0))->isFalse
+				->boolean($this->testedInstance->hasSize(1))->isTrue
+				->boolean($this->testedInstance->hasSize(rand(- PHP_INT_MAX, 0)))->isFalse
+				->boolean($this->testedInstance->hasSize(rand(2, PHP_INT_MAX)))->isFalse
+
+			->if($this->testedInstance->add(uniqid()))
+			->then
+				->boolean($this->testedInstance->hasSize(0))->isFalse
+				->boolean($this->testedInstance->hasSize(1))->isFalse
+				->boolean($this->testedInstance->hasSize(2))->isTrue
+				->boolean($this->testedInstance->hasSize(rand(- PHP_INT_MAX, 1)))->isFalse
+				->boolean($this->testedInstance->hasSize(rand(3, PHP_INT_MAX)))->isFalse
 		;
 	}
 
@@ -25,15 +81,14 @@ class collection extends \atoum
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->add(uniqid()))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
+				->object($this->testedInstance->add($value1 = uniqid()))->isTestedInstance
+				->boolean($this->testedInstance->containsAt($value1, 0))->isTrue
 
-				->object($this->testedInstance->add(uniqid(), uniqid()))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(2)
+				->object($this->testedInstance->add($value2 = uniqid(), $key2 = uniqid()))->isTestedInstance
+				->boolean($this->testedInstance->containsAt($value2, $key2))->isTrue
 
-				->object($this->testedInstance->add(uniqid(), rand(- PHP_INT_MAX, PHP_INT_MAX)))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(3)
-
+				->object($this->testedInstance->add($value3 = uniqid(), $key3 = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isTestedInstance
+				->boolean($this->testedInstance->containsAt($value3, $key3))->isTrue
 		;
 	}
 
@@ -43,33 +98,34 @@ class collection extends \atoum
 			->given($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->remove(uniqid()))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
 
-			->if($this->testedInstance->add(uniqid()))
+				->object($this->testedInstance->remove(rand(- PHP_INT_MAX, PHP_INT_MAX)))->isTestedInstance
+
+			->if(
+				$this->testedInstance->add($value1 = uniqid()),
+				$this->testedInstance->add($value2 = uniqid(), $key2 = 5),
+				$this->testedInstance->add($value3 = uniqid(), $key3 = uniqid())
+			)
 			->then
 				->object($this->testedInstance->remove(0))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
+				->boolean($this->testedInstance->contains($value1))->isFalse
+				->boolean($this->testedInstance->containsAt($value2, $key2))->isTrue
+				->boolean($this->testedInstance->containsAt($value3, $key3))->isTrue
 
-			->if(
-				$this->testedInstance->add(uniqid()),
-				$this->testedInstance->add(uniqid(), $key = uniqid())
-			)
-			->then
-				->object($this->testedInstance->remove($key))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
+				->object($this->testedInstance->remove(0))->isTestedInstance
+				->boolean($this->testedInstance->contains($value1))->isFalse
+				->boolean($this->testedInstance->containsAt($value2, $key2))->isTrue
+				->boolean($this->testedInstance->containsAt($value3, $key3))->isTrue
 
-			->if(
-				$this->testedInstance->add($value1 = uniqid(), $key1 = uniqid()),
-				$this->testedInstance->add($value2 = uniqid(), $key2 = uniqid())
-			)
-			->then
-				->object($this->testedInstance->remove($key2, function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(2)
-				->string($removedValue)->isEqualTo($value2)
+				->object($this->testedInstance->remove($key3))->isTestedInstance
+				->boolean($this->testedInstance->contains($value1))->isFalse
+				->boolean($this->testedInstance->containsAt($value2, $key2))->isTrue
+				->boolean($this->testedInstance->containsAt($value3, $key3))->isFalse
 
-				->object($this->testedInstance->remove($key1, function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-				->string($removedValue)->isEqualTo($value1)
+				->object($this->testedInstance->remove($key2))->isTestedInstance
+				->boolean($this->testedInstance->contains($value1))->isFalse
+				->boolean($this->testedInstance->containsAt($value2, $key2))->isFalse
+				->boolean($this->testedInstance->containsAt($value3, $key3))->isFalse
 		;
 	}
 
@@ -79,42 +135,77 @@ class collection extends \atoum
 			->given($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->removeLast())->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
 
 			->if($this->testedInstance->add(uniqid()))
 			->then
 				->object($this->testedInstance->removeLast())->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
+				->boolean($this->testedInstance->isEmpty())->isTrue
 
 			->if(
-				$this->testedInstance
-					->add($value0 = uniqid())
-					->add($value1 = uniqid(), uniqid())
-					->add($value2 = uniqid())
+				$this->testedInstance->add($value1 = uniqid()),
+				$this->testedInstance->add($value2 = uniqid()),
+				$this->testedInstance->add($value3 = uniqid())
 			)
 			->then
-				->object($this->testedInstance->removeLast(function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(2)
-				->string($removedValue)->isEqualTo($value2)
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->boolean($this->testedInstance->contains($value3))->isFalse
+				->boolean($this->testedInstance->contains($value2))->isTrue
+				->boolean($this->testedInstance->contains($value1))->isTrue
 
-				->object($this->testedInstance->removeLast(function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-				->string($removedValue)->isEqualTo($value1)
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->boolean($this->testedInstance->contains($value3))->isFalse
+				->boolean($this->testedInstance->contains($value2))->isFalse
+				->boolean($this->testedInstance->contains($value1))->isTrue
 
-				->object($this->testedInstance->removeLast(function($value) use (& $removedValue) { $removedValue = $value; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-				->string($removedValue)->isEqualTo($value0)
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->boolean($this->testedInstance->contains($value3))->isFalse
+				->boolean($this->testedInstance->contains($value2))->isFalse
+				->boolean($this->testedInstance->contains($value1))->isFalse
+		;
+	}
 
-			->if(
-				$this->testedInstance
-					->add($value0 = uniqid())
-					->add($value1 = uniqid(), uniqid())
-					->add($value2 = uniqid())
-			)
+	public function testContains()
+	{
+		$this
+			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->removeLast(function($value) use (& $removedValues) { $removedValues[] = $value; }, 2))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-				->array($removedValues)->isEqualTo([ $value2, $value1 ])
+				->boolean($this->testedInstance->contains(uniqid()))->isFalse
+
+			->if($this->testedInstance->add($value = uniqid()))
+			->then
+				->boolean($this->testedInstance->contains(uniqid()))->isFalse
+				->boolean($this->testedInstance->contains($value))->isTrue
+		;
+	}
+
+	public function testContainsAt()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->boolean($this->testedInstance->containsAt(uniqid(), uniqid()))->isFalse
+				->boolean($this->testedInstance->containsAt(uniqid(), rand(- PHP_INT_MAX, PHP_INT_MAX)))->isFalse
+
+			->if($this->testedInstance->add($value1 = uniqid()))
+			->then
+				->boolean($this->testedInstance->containsAt(uniqid(), rand(- PHP_INT_MAX, PHP_INT_MAX)))->isFalse
+				->boolean($this->testedInstance->containsAt($value1, 0))->isTrue
+				->boolean($this->testedInstance->containsAt($value1, uniqid()))->isFalse
+				->boolean($this->testedInstance->containsAt($value1, rand(- PHP_INT_MAX, -1)))->isFalse
+				->boolean($this->testedInstance->containsAt($value1, rand(1, PHP_INT_MAX)))->isFalse
+
+			->if($this->testedInstance->add($value2 = uniqid(), $key2 = uniqid()))
+			->then
+				->boolean($this->testedInstance->containsAt(uniqid(), rand(- PHP_INT_MAX, PHP_INT_MAX)))->isFalse
+				->boolean($this->testedInstance->containsAt($value1, 0))->isTrue
+				->boolean($this->testedInstance->containsAt($value1, uniqid()))->isFalse
+				->boolean($this->testedInstance->containsAt($value1, rand(- PHP_INT_MAX, -1)))->isFalse
+				->boolean($this->testedInstance->containsAt($value1, rand(1, PHP_INT_MAX)))->isFalse
+				->boolean($this->testedInstance->containsAt($value2, 0))->isFalse
+				->boolean($this->testedInstance->containsAt($value2, $key2))->isTrue
+				->boolean($this->testedInstance->containsAt($value2, uniqid()))->isFalse
+				->boolean($this->testedInstance->containsAt($value2, rand(- PHP_INT_MAX, -1)))->isFalse
+				->boolean($this->testedInstance->containsAt($value2, rand(1, PHP_INT_MAX)))->isFalse
 		;
 	}
 
@@ -123,13 +214,11 @@ class collection extends \atoum
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->walk(function($value, $key) use (& $innerValue1, & $innerKey1) { $innerValue1 = $value; $innerKey1 = $key; }))->isTestedInstance
-				->variable($innerValue1)->isNull
-				->variable($innerKey1)->isNull
+				->boolean($this->testedInstance->walk(function() {}))->isTrue
 
 			->if($this->testedInstance->add($value1 = uniqid()))
 			->then
-				->object($this->testedInstance->walk(function($value, $key) use (& $innerValues, & $innerKeys) { $innerValues[] = $value; $innerKeys[] = $key; }))->isTestedInstance
+				->boolean($this->testedInstance->walk(function($value, $key) use (& $innerValues, & $innerKeys) { $innerValues[] = $value; $innerKeys[] = $key; }))->isTrue
 				->array($innerValues)->isEqualTo(array($value1))
 				->array($innerKeys)->isEqualTo(array(0))
 
@@ -139,18 +228,19 @@ class collection extends \atoum
 				$innerValues = array()
 			)
 			->then
-				->object($this->testedInstance->walk(function($value, $key) use (& $innerValues, & $innerKeys) { $innerValues[] = $value; $innerKeys[] = $key; }))->isTestedInstance
+				->boolean($this->testedInstance->walk(function($value, $key) use (& $innerValues, & $innerKeys) { $innerValues[] = $value; $innerKeys[] = $key; }))->isTrue
 				->array($innerValues)->isEqualTo(array($value1, $value2))
 				->array($innerKeys)->isEqualTo(array(0, $key2))
 
 			->if(
+				$this->testedInstance->add($value3 = uniqid(), $key3 = uniqid()),
 				$innerKeys = array(),
 				$innerValues = array()
 			)
 			->then
-				->object($this->testedInstance->walk(function($value, $key) use (& $innerValues, & $innerKeys) { $innerValues[] = $value; $innerKeys[] = $key; $this->testedInstance->stop(); }))->isTestedInstance
-				->array($innerValues)->isEqualTo(array($value1))
-				->array($innerKeys)->isEqualTo(array(0))
+				->boolean($this->testedInstance->walk(function($value, $key) use (& $innerValues, & $innerKeys) { static $count = 0; $innerValues[] = $value; $innerKeys[] = $key; return new jobs\boolean($count++ != 1); }))->isFalse
+				->array($innerValues)->isEqualTo(array($value1, $value2))
+				->array($innerKeys)->isEqualTo(array(0, $key2))
 		;
 	}
 
@@ -159,68 +249,61 @@ class collection extends \atoum
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->apply(rand(- PHP_INT_MAX, PHP_INT_MAX), function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->variable($innerValue)->isNull
-				->object($this->testedInstance->apply(uniqid(), function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->variable($innerValue)->isNull
+				->boolean($this->testedInstance->apply(rand(- PHP_INT_MAX, PHP_INT_MAX), function() {}))->isFalse
+				->boolean($this->testedInstance->apply(uniqid(), function() {}))->isFalse
 
 			->if($this->testedInstance->add($value1 = uniqid()))
 			->then
-				->object($this->testedInstance->apply(rand(- PHP_INT_MAX, -1), function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->variable($innerValue)->isNull
-				->object($this->testedInstance->apply(rand(1, PHP_INT_MAX), function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->variable($innerValue)->isNull
-				->object($this->testedInstance->apply(0, function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
+				->boolean($this->testedInstance->apply(rand(- PHP_INT_MAX, -1), function() {}))->isFalse
+				->boolean($this->testedInstance->apply(rand(1, PHP_INT_MAX), function() {}))->isFalse
+				->boolean($this->testedInstance->apply(0, function($value) use (& $innerValue) { $innerValue = $value; }))->isTrue
 				->string($innerValue)->isEqualTo($value1)
 
-			->given($innerValue = null)
 			->if($this->testedInstance->add($value2 = uniqid(), $key = uniqid()))
 			->then
-				->object($this->testedInstance->apply(rand(- PHP_INT_MAX, -1), function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->variable($innerValue)->isNull
-				->object($this->testedInstance->apply(rand(1, PHP_INT_MAX), function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->variable($innerValue)->isNull
-				->object($this->testedInstance->apply(0, function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->string($innerValue)->isEqualTo($value1)
-				->object($this->testedInstance->apply($key, function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->string($innerValue)->isEqualTo($value2)
+				->boolean($this->testedInstance->apply(rand(- PHP_INT_MAX, -1), function() {}))->isFalse
+				->boolean($this->testedInstance->apply(rand(1, PHP_INT_MAX), function() {}))->isFalse
+				->boolean($this->testedInstance->apply(0, function($value) use (& $innerValue1) { $innerValue1 = $value; }))->isTrue
+				->string($innerValue1)->isEqualTo($value1)
+				->boolean($this->testedInstance->apply($key, function($value) use (& $innerValue2) { $innerValue2 = $value; }))->isTrue
+				->string($innerValue2)->isEqualTo($value2)
 		;
 	}
 
-	public function testStop()
+	public function testFilter()
 	{
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->stop())->isTestedInstance
-		;
-	}
-
-	public function testIfIsNotStopped()
-	{
-		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->ifNotStopped(function() use (& $stopped) { $stopped = true; }))->isTestedInstance
-				->boolean($stopped)->isTrue
-
-			->if($this->testedInstance->add(uniqid()))
-			->then
-				->object($this->testedInstance->ifNotStopped(function() use (& $stopped) { $stopped = true; }))->isTestedInstance
-				->boolean($stopped)->isTrue
-
-			->if($this->testedInstance->walk(function() {}))
-			->then
-				->object($this->testedInstance->ifNotStopped(function() use (& $stopped) { $stopped = true; }))->isTestedInstance
-				->boolean($stopped)->isTrue
+				->boolean($this->testedInstance->filter(function() {}))->isTrue
 
 			->if(
-				$this->testedInstance->walk(function() { $this->testedInstance->stop(); }),
-				$stopped = false
+				$this->testedInstance->add($value1 = uniqid()),
+				$this->testedInstance->add($value2 = uniqid()),
+				$this->testedInstance->add($value3 = uniqid())
 			)
 			->then
-				->object($this->testedInstance->ifNotStopped(function() use (& $stopped) { $stopped = true; }))->isTestedInstance
-				->boolean($stopped)->isFalse
+				->boolean($this->testedInstance->filter(function() {}))->isTrue
+				->boolean($this->testedInstance->isEmpty())->isTrue
+
+			->if(
+				$this->testedInstance->add($value1 = uniqid()),
+				$this->testedInstance->add($value2 = uniqid()),
+				$this->testedInstance->add($value3 = uniqid())
+			)
+			->then
+				->boolean($this->testedInstance->filter(function() { return new jobs\boolean\true; }))->isFalse
+				->boolean($this->testedInstance->containsAt($value1, 0))->isTrue
+				->boolean($this->testedInstance->containsAt($value2, 1))->isTrue
+				->boolean($this->testedInstance->containsAt($value3, 2))->isTrue
+
+				->boolean($this->testedInstance->filter(function($value) use ($value2) { return new jobs\boolean($value != $value2); }))->isTrue
+				->boolean($this->testedInstance->containsAt($value1, 0))->isTrue
+				->boolean($this->testedInstance->containsAt($value2, 1))->isFalse
+				->boolean($this->testedInstance->containsAt($value3, 2))->isTrue
+
+				->boolean($this->testedInstance->filter(function() { return new jobs\boolean\false; }))->isTrue
+				->boolean($this->testedInstance->isEmpty())->isTrue
 		;
 	}
 }

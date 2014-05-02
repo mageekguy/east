@@ -5,11 +5,12 @@ namespace jobs\tests\units\collections;
 require __DIR__ . '/../../runner.php';
 
 use
+	jobs\tests\units,
 	jobs\boolean,
 	mock\jobs\world
 ;
 
-class bag extends \atoum
+class bag extends units\test
 {
 	public function testClass()
 	{
@@ -21,250 +22,206 @@ class bag extends \atoum
 		$this
 			->given(
 				$this->newTestedInstance,
-				$comparable1 = new world\comparable()
+				$comparable1 = new world\comparable,
+				$comparable2 = new world\comparable
 			)
 
-			->if($this->calling($comparable1)->isIdenticalTo = new boolean\false())
+			->if($this->calling($comparable1)->isIdenticalTo = function($comparable) use ($comparable1) { return new boolean($comparable1 === $comparable); })
 			->then
 				->object($this->testedInstance->add($comparable1))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
+				->boolean($this->testedInstance->contains($comparable1))->isTrue
 
-			->if($this->calling($comparable1)->isIdenticalTo = new boolean\true())
+			->if($this->calling($comparable2)->isIdenticalTo = function($comparable) use ($comparable2) { return new boolean($comparable2 === $comparable); })
 			->then
-				->object($this->testedInstance->add($comparable1))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
+				->object($this->testedInstance->add($comparable2))->isTestedInstance
+				->boolean($this->testedInstance->contains($comparable1))->isTrue
+				->boolean($this->testedInstance->contains($comparable2))->isTrue
+				->boolean($this->testedInstance->hasSize(2))->isTrue
 
-			->if($this->calling($comparable1)->isIdenticalTo = new boolean\false())
-			->then
-				->object($this->testedInstance->add($comparable1))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(2)
+				->object($this->testedInstance->add($comparable2))->isTestedInstance
+				->boolean($this->testedInstance->contains($comparable1))->isTrue
+				->boolean($this->testedInstance->contains($comparable2))->isTrue
+				->boolean($this->testedInstance->hasSize(2))->isTrue
 		;
 	}
 
 	public function testRemove()
 	{
 		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->remove($comparable = new world\comparable()))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-
-			->if(
-				$this->calling($comparable)->isIdenticalTo = new boolean\false(),
-				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->isIdenticalTo = new boolean\true()
+			->given(
+				$this->newTestedInstance,
+				$comparable1 = new world\comparable,
+				$comparable2 = new world\comparable
 			)
 			->then
-				->object($this->testedInstance->remove($comparable))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
+				->object($this->testedInstance->remove($comparable1))->isTestedInstance
 
 			->if(
-				$this->calling($comparable)->isIdenticalTo = new boolean\false(),
-				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->isIdenticalTo = new boolean\true()
-			)
+					$this->calling($comparable1)->isIdenticalTo = function($comparable) use ($comparable1) { return new boolean($comparable1 === $comparable); },
+					$this->calling($comparable2)->isIdenticalTo = function($comparable) use ($comparable2) { return new boolean($comparable2 === $comparable); },
+					$this->testedInstance
+						->add($comparable1)
+						->add($comparable2)
+				)
 			->then
-				->object($this->testedInstance->remove($comparable, function($comparable) use (& $removedComparable) { $removedComparable = $comparable; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-				->object($removedComparable)->isIdenticalTo($comparable)
+				->object($this->testedInstance->remove($comparable2))->isTestedInstance
+				->boolean($this->testedInstance->contains($comparable1))->isTrue
+				->boolean($this->testedInstance->contains($comparable2))->isFalse
+
+				->object($this->testedInstance->remove($comparable1))->isTestedInstance
+				->boolean($this->testedInstance->contains($comparable1))->isFalse
+				->boolean($this->testedInstance->contains($comparable2))->isFalse
 		;
 	}
 
 	public function testRemoveAt()
 	{
 		$this
-			->given($this->newTestedInstance)
+			->given(
+				$this->newTestedInstance,
+				$comparable1 = new world\comparable(),
+				$comparable2 = new world\comparable()
+			)
 			->then
 				->object($this->testedInstance->removeAt(rand(- PHP_INT_MAX, PHP_INT_MAX)))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
 
 			->if(
-				$comparable0 = new world\comparable(),
-				$this->calling($comparable0)->isIdenticalTo = new boolean\false(),
-
-				$comparable1 = new world\comparable(),
-				$this->calling($comparable1)->isIdenticalTo = new boolean\false(),
+				$this->calling($comparable1)->isIdenticalTo = function($comparable) use ($comparable1) { return new boolean($comparable1 === $comparable); },
+				$this->calling($comparable2)->isIdenticalTo = function($comparable) use ($comparable2) { return new boolean($comparable2 === $comparable); },
 
 				$this->testedInstance
-					->add($comparable0)
 					->add($comparable1)
+					->add($comparable2)
 			)
 			->then
 				->object($this->testedInstance->removeAt(0))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
+				->boolean($this->testedInstance->contains($comparable1))->isFalse
+				->boolean($this->testedInstance->contains($comparable2))->isTrue
 
 				->object($this->testedInstance->removeAt(1))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-
-				->object($this->testedInstance->removeAt(0))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-
-			->if(
-				$this->testedInstance
-					->add($comparable0)
-					->add($comparable1)
-			)
-			->then
-				->object($this->testedInstance->removeAt(1))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-
-				->object($this->testedInstance->removeAt(0))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-
-			->if(
-				$this->testedInstance
-					->add($comparable0)
-					->add($comparable1)
-			)
-			->then
-				->object($this->testedInstance->removeAt(0, function($comparable) use (& $removedComparable0) { $removedComparable0 = $comparable; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-				->object($removedComparable0)->isIdenticalTo($comparable0)
-
-				->object($this->testedInstance->removeAt(1, function($comparable) use (& $removedComparable1) { $removedComparable1 = $comparable; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-				->variable($removedComparable1)->isNull
-
-				->object($this->testedInstance->removeAt(0, function($comparable) use (& $removedComparable0) { $removedComparable0 = $comparable; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-				->object($removedComparable0)->isIdenticalTo($comparable1)
+				->boolean($this->testedInstance->contains($comparable1))->isFalse
+				->boolean($this->testedInstance->contains($comparable2))->isFalse
 		;
 	}
 
 	public function testRemoveLast()
 	{
 		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->removeLast())->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-
-			->if(
-				$comparable0 = new world\comparable(),
-				$this->calling($comparable0)->isIdenticalTo = new boolean\false(),
-
+			->given(
+				$this->newTestedInstance,
 				$comparable1 = new world\comparable(),
-				$this->calling($comparable1)->isIdenticalTo = new boolean\false(),
-
-				$this->testedInstance
-					->add($comparable0)
-					->add($comparable1)
+				$comparable2 = new world\comparable()
 			)
 			->then
 				->object($this->testedInstance->removeLast())->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-
-				->object($this->testedInstance->removeLast())->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
 
 			->if(
-				$this->testedInstance
-					->add($comparable0)
-					->add($comparable1)
-			)
-			->then
-				->object($this->testedInstance->removeLast(function($comparable) use (& $removedComparable) { $removedComparable = $comparable; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-				->object($removedComparable)->isEqualTo($comparable1)
+				$this->calling($comparable1)->isIdenticalTo = function($comparable) use ($comparable1) { return new boolean($comparable1 === $comparable); },
+				$this->calling($comparable2)->isIdenticalTo = function($comparable) use ($comparable2) { return new boolean($comparable2 === $comparable); },
 
-				->object($this->testedInstance->removeLast(function($comparable) use (& $removedComparable) { $removedComparable = $comparable; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-				->object($removedComparable)->isEqualTo($comparable0)
-
-			->if(
-				$comparable2 = new world\comparable(),
-				$this->calling($comparable2)->isIdenticalTo = new boolean\false(),
 				$this->testedInstance
-					->add($comparable0)
 					->add($comparable1)
 					->add($comparable2)
 			)
 			->then
-				->object($this->testedInstance->removeLast(function($comparable) use (& $removedComparables) { $removedComparables[] = $comparable; }, 2))->isTestedInstance
-				->sizeof($this->testedInstance)->isEqualTo(1)
-				->array($removedComparables)->isEqualTo([ $comparable2, $comparable1 ])
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->boolean($this->testedInstance->contains($comparable1))->isTrue
+				->boolean($this->testedInstance->contains($comparable2))->isFalse
+
+				->object($this->testedInstance->removeLast())->isTestedInstance
+				->boolean($this->testedInstance->isEmpty())->isTrue
 		;
 	}
 
 	public function testRemoveAll()
 	{
 		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->removeAll())->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-
-			->if(
-				$comparable0 = new world\comparable(),
-				$this->calling($comparable0)->isIdenticalTo = new boolean\false(),
-
+			->given(
+				$this->newTestedInstance,
 				$comparable1 = new world\comparable(),
-				$this->calling($comparable1)->isIdenticalTo = new boolean\false(),
+				$comparable2 = new world\comparable()
+			)
+			->then
+				->object($this->testedInstance->removeAll())->isTestedInstance
 
-				$comparable2 = new world\comparable(),
-				$this->calling($comparable2)->isIdenticalTo = new boolean\false(),
+			->if(
+				$this->calling($comparable1)->isIdenticalTo = function($comparable) use ($comparable1) { return new boolean($comparable1 === $comparable); },
+				$this->calling($comparable2)->isIdenticalTo = function($comparable) use ($comparable2) { return new boolean($comparable2 === $comparable); },
 
 				$this->testedInstance
-					->add($comparable0)
 					->add($comparable1)
 					->add($comparable2)
 			)
 			->then
 				->object($this->testedInstance->removeAll())->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-
-			->if(
-				$this->testedInstance
-					->add($comparable0)
-					->add($comparable1)
-					->add($comparable2)
-			)
-			->then
-				->object($this->testedInstance->removeAll(function($comparable) use (& $removedComparables) { $removedComparables[] = $comparable; }))->isTestedInstance
-				->sizeof($this->testedInstance)->isZero
-				->array($removedComparables)->isEqualTo([ $comparable0, $comparable1, $comparable2 ])
+				->boolean($this->testedInstance->isEmpty())->isTrue
 		;
 	}
 
 	public function testApply()
 	{
 		$this
-			->given($this->newTestedInstance)
+			->given(
+				$this->newTestedInstance,
+				$comparable1 = new world\comparable()
+			)
 			->then
-				->object($this->testedInstance->apply(rand(- PHP_INT_MAX, PHP_INT_MAX), function($value, $key) use (& $innerValue) { $innerValue = $value; $innerKey = $key; }))->isTestedInstance
-				->variable($innerValue)->isNull
+				->boolean($this->testedInstance->apply(rand(- PHP_INT_MAX, PHP_INT_MAX), function() {}))->isFalse
 
-			->if($this->testedInstance->add($comparable = new world\comparable()))
+			->if(
+				$this->calling($comparable1)->isIdenticalTo = function($comparable) use ($comparable1) { return new boolean($comparable1 === $comparable); },
+				$this->testedInstance->add($comparable1)
+			)
 			->then
-				->object($this->testedInstance->apply(0, function($value) use (& $innerValue) { $innerValue = $value; }))->isTestedInstance
-				->object($innerValue)->isIdenticalTo($comparable)
+				->boolean($this->testedInstance->apply(0, function($value) use (& $innerValue) { $innerValue = $value; }))->isTrue
+				->object($innerValue)->isIdenticalTo($comparable1)
 		;
 	}
 
-	public function testIfContains()
+	public function testApplyOn()
 	{
 		$this
-			->given($this->newTestedInstance)
+			->given(
+				$this->newTestedInstance,
+				$comparable1 = new world\comparable()
+			)
+
+			->if($this->calling($comparable1)->isIdenticalTo = function($comparable) use ($comparable1) { return new boolean($comparable1 === $comparable); })
 			->then
-				->object($this->testedInstance->ifContains($comparable = new world\comparable(), function() use (& $contains) { $contains = true; }))->isTestedInstance
-				->variable($contains)->isNull
+				->boolean($this->testedInstance->applyOn($comparable1, function() {}))->isFalse
 
-				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
-				->boolean($contains)->isFalse
+			->if($this->testedInstance->add($comparable1))
+			->then
+				->boolean($this->testedInstance->applyOn($comparable1, function($comparable, $key) use (& $innerComparable, & $innerKey) { $innerComparable = $comparable; $innerKey = $key; }))->isTrue
+				->object($innerComparable)->isIdenticalTo($comparable1)
+				->integer($innerKey)->isZero
 
-			->if(
-				$this->calling($comparable)->isIdenticalTo = new boolean\false(),
-				$this->testedInstance->add($comparable),
-				$this->calling($comparable)->isIdenticalTo = new boolean\true()
+				->boolean($this->testedInstance->applyOn($comparable1, function($comparable, $key) use (& $otherInnerComparable, & $otherInnerKey) { $otherInnerComparable = $comparable; $otherInnerKey = $key; return new boolean\false; }))->isFalse
+				->object($otherInnerComparable)->isIdenticalTo($comparable1)
+				->integer($otherInnerKey)->isZero
+		;
+	}
+
+	public function testContains()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$comparable1 = new world\comparable(),
+				$comparable2 = new world\comparable()
 			)
 			->then
-				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
-				->boolean($contains)->isTrue
+				->boolean($this->testedInstance->contains($comparable1))->isFalse
 
-			->if($this->calling($comparable)->isIdenticalTo = new boolean\false())
+			->if(
+				$this->calling($comparable1)->isIdenticalTo = function($comparable) use ($comparable1) { return new boolean($comparable1 === $comparable); },
+				$this->calling($comparable2)->isIdenticalTo = function($comparable) use ($comparable2) { return new boolean($comparable2 === $comparable); },
+
+				$this->testedInstance->add($comparable1)
+			)
 			->then
-				->object($this->testedInstance->ifContains($comparable, function() use (& $contains) { $contains = true; }, function() use (& $contains) { $contains = false; }))->isTestedInstance
-				->boolean($contains)->isFalse
+				->boolean($this->testedInstance->contains($comparable1))->isTrue
+				->boolean($this->testedInstance->contains($comparable2))->isFalse
 		;
 	}
 }

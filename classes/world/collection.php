@@ -2,9 +2,9 @@
 
 namespace jobs\world;
 
-interface collection extends \countable
+interface collection
 {
 	public function walk(callable $callable);
-	public function stop();
-	public function ifNotStopped(callable $callable);
+	public function apply($mixed, callable $callable);
+	public function contains($mixed);
 }

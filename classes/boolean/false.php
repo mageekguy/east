@@ -3,23 +3,13 @@
 namespace jobs\boolean;
 
 use
-	jobs\world\boolean
+	jobs
 ;
 
-class false implements boolean
+class false extends jobs\boolean
 {
-	public function ifTrue(callable $callable)
+	public function __construct()
 	{
-		return $this;
-	}
-
-	public function ifFalse(callable $callable)
-	{
-		if ($callable() == true)
-		{
-			return new true();
-		}
-
-		return $this;
+		parent::__construct(false);
 	}
 }
