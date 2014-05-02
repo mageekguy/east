@@ -57,14 +57,6 @@ class user implements world\objects\box\user
 
 	public function giveKey(world\objects\lockable $lockable, world\objects\key\aggregator $aggregator, callable $callable = null)
 	{
-		$lockable->ifEqualTo($this->lockable, function() use ($callable) {
-				$aggregator->takeKey($this->key, $callable ?: function() {});
-
-				$this->lockable = null;
-				$this->key = null;
-			}
-		);
-
 		return $this;
 	}
 
