@@ -244,7 +244,7 @@ class collection extends test
 		;
 	}
 
-	public function testApplyAt()
+	public function testApply()
 	{
 		$this
 			->given($this->newTestedInstance)
