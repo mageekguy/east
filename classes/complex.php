@@ -12,28 +12,47 @@ class complex implements world\complex
 		$this->setWith($realPart, $imaginaryPart);
 	}
 
+	public function addComplex(world\complex $complex)
+	{
+		$complex->addToComplex($this);
+
+		return $this;
+	}
+
 	public function addToComplex(world\complex $complex)
 	{
-		$complex->addTo($this->realPart, $this->imaginaryPart);
+		$complex->add($this->realPart, $this->imaginaryPart);
 
 		return $this;
 	}
 
-	public function multiplyWithComplex(world\complex $complex)
-	{
-		$complex->multiplyWith($this->realPart, $this->imaginaryPart);
-
-		return $this;
-	}
-
-	public function addTo($realPart, $imaginaryPart = 0.)
+	public function add($realPart, $imaginaryPart = 0.)
 	{
 		return $this->setWith($this->realPart + $realPart, $this->imaginaryPart + $imaginaryPart);
 	}
 
-	public function multiplyWith($realPart, $imaginaryPart = 0.)
+	public function multiplyWithComplex(world\complex $complex)
+	{
+		$complex->multiplyComplex($this);
+
+		return $this;
+	}
+
+	public function multiplyComplex(world\complex $complex)
+	{
+		$complex->multiply($this->realPart, $this->imaginaryPart);
+
+		return $this;
+	}
+
+	public function multiply($realPart, $imaginaryPart = 0.)
 	{
 		return $this->setWith(($this->realPart * $realPart) - ($this->imaginaryPart * $imaginaryPart), ($this->realPart * $imaginaryPart) + ($this->imaginaryPart * $realPart));
+	}
+
+	public function hasModuleGreaterThan($float)
+	{
+		return new boolean(sqrt(pow($this->realPart, 2) + pow($this->imaginaryPart, 2)) > $float);
 	}
 
 	private function setWith($realPart, $imaginaryPart)
