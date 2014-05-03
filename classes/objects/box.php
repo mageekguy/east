@@ -19,6 +19,16 @@ class box implements objects\box
 		$this->objects = new jobs\objects();
 	}
 
+	public function isEqualTo(world\comparable $comparable)
+	{
+		return new jobs\boolean($this == $comparable);
+	}
+
+	public function isIdenticalTo(world\comparable $comparable)
+	{
+		return new jobs\boolean($this === $comparable);
+	}
+
 	public function userOpen(objects\box\user $user)
 	{
 		return new boolean\true();

@@ -6,7 +6,7 @@ use
 	jobs\world
 ;
 
-interface box
+interface box extends world\object
 {
 	public function userOpen(box\user $user);
 	public function userClose(box\user $user);

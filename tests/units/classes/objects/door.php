@@ -5,8 +5,8 @@ namespace jobs\tests\units\objects;
 require __DIR__ . '/../../runner.php';
 
 use
-	jobs\boolean,
 	jobs\tests\units,
+	jobs\boolean,
 	mock\jobs\world\area,
 	mock\jobs\world\comparable,
 	mock\jobs\world\objects\door\user

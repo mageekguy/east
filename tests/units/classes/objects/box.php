@@ -6,12 +6,36 @@ require __DIR__ . '/../../runner.php';
 
 use
 	jobs\boolean,
+	jobs\tests\units,
 	mock\jobs\world\object,
-	mock\jobs\world\objects
+	mock\jobs\world\objects,
+	mock\jobs\world\comparable
 ;
 
-class box extends \atoum
+class box extends units\test
 {
+	function testIsEqualTo()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->boolean($this->testedInstance->isEqualTo($this->testedInstance))->isTrue
+				->boolean($this->testedInstance->isEqualTo(clone $this->testedInstance))->isTrue
+				->boolean($this->testedInstance->isEqualTo(new comparable))->isFalse
+		;
+	}
+
+	function testIsIdenticalTo()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->boolean($this->testedInstance->isIdenticalTo($this->testedInstance))->isTrue
+				->boolean($this->testedInstance->isIdenticalTo(clone $this->testedInstance))->isFalse
+				->boolean($this->testedInstance->isIdenticalTo(new comparable))->isFalse
+		;
+	}
+
 	public function testUserOpen()
 	{
 		$this
