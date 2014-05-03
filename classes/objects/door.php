@@ -41,7 +41,7 @@ class door implements objects\door
 	{
 		return $user
 			->openDoor($this)
-				->ifTrue(function() {
+				->ifTrue(function() use ($user) {
 						$user->enterInArea($this->area);
 					}
 				)

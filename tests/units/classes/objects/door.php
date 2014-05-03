@@ -99,6 +99,16 @@ class door extends units\test
 				->boolean($this->testedInstance->userCross($user))->isFalse
 				->mock($user)
 					->call('openDoor')->withIdenticalArguments($this->testedInstance)->once
+					->mock($user)
+						->call('enterInArea')->never
+
+			->if($this->calling($user)->openDoor = new boolean\true)
+			->then
+				->boolean($this->testedInstance->userCross($user))->isTrue
+				->mock($user)
+					->call('openDoor')->withIdenticalArguments($this->testedInstance)->twice
+					->mock($user)
+						->call('enterInArea')->withIdenticalArguments($area)->once
 		;
 	}
 }
