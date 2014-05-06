@@ -4,5 +4,5 @@ namespace jobs\world\object\property;
 
 interface value
 {
-	public function match(self $value);
+	function match(self $value);
 }

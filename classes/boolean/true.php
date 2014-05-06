@@ -8,7 +8,7 @@ use
 
 class true extends jobs\boolean
 {
-	public function __construct()
+	function __construct()
 	{
 		parent::__construct(true);
 	}

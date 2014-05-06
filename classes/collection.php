@@ -11,17 +11,17 @@ class collection implements world\collection
 {
 	private $values = [];
 
-	public function isEmpty()
+	function isEmpty()
 	{
 		return $this->hasSize(0);
 	}
 
-	public function hasSize($size)
+	function hasSize($size)
 	{
 		return new boolean(sizeof($this->values) == $size);
 	}
 
-	public function isNotEmpty()
+	function isNotEmpty()
 	{
 		return $this
 			->isEmpty()
@@ -29,7 +29,7 @@ class collection implements world\collection
 		;
 	}
 
-	public function add($value, $key = null)
+	function add($value, $key = null)
 	{
 		(new boolean($key === null))
 			->ifTrue(function() use (& $key) {
@@ -43,7 +43,7 @@ class collection implements world\collection
 		return $this;
 	}
 
-	public function remove($key)
+	function remove($key)
 	{
 		(new boolean(isset($this->values[$key])))
 			->ifTrue(function() use ($key) {
@@ -55,14 +55,14 @@ class collection implements world\collection
 		return $this;
 	}
 
-	public function removeLast()
+	function removeLast()
 	{
 		end($this->values);
 
 		return $this->remove(key($this->values));
 	}
 
-	public function contains($value)
+	function contains($value)
 	{
 		return $this
 			->walk(function($innerValue) use ($value) {
@@ -73,7 +73,7 @@ class collection implements world\collection
 		;
 	}
 
-	public function containsAt($value, $key)
+	function containsAt($value, $key)
 	{
 		return $this
 			->walk(function($innerValue, $innerKey) use ($value, $key) {
@@ -84,7 +84,7 @@ class collection implements world\collection
 		;
 	}
 
-	public function walk(callable $callable)
+	function walk(callable $callable)
 	{
 		return $this
 			->isEmpty()
@@ -116,7 +116,7 @@ class collection implements world\collection
 		;
 	}
 
-	public function apply($key, callable $callable)
+	function apply($key, callable $callable)
 	{
 		return (new boolean(isset($this->values[$key])))
 			->ifTrue(function() use ($key, $callable) {
@@ -126,7 +126,7 @@ class collection implements world\collection
 		;
 	}
 
-	public function filter(callable $callable)
+	function filter(callable $callable)
 	{
 		return $this
 			->isEmpty()

@@ -4,6 +4,6 @@ namespace jobs\world;
 
 interface area
 {
-	public function objectEnter(object $object);
-	public function objectLeave(object $object);
+	function objectEnter(object $object);
+	function objectLeave(object $object);
 }

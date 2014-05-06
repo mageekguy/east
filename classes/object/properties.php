@@ -10,12 +10,12 @@ class properties
 {
 	private $values = null;
 
-	public function __construct()
+	function __construct()
 	{
 		$this->values = new dictionary();
 	}
 
-	public function addProperty(property\name $name, property\value $value)
+	function addProperty(property\name $name, property\value $value)
 	{
 		$this->values->ifContains($name, function($values) use ($value) {
 				$values->ifContains($value, function() {}, function() use ($value, $values) { $values->add($value); });
@@ -28,7 +28,7 @@ class properties
 		return $this;
 	}
 
-	public function walk(callable $callable)
+	function walk(callable $callable)
 	{
 		$this->values->walk(function($name, $values) use ($callable) {
 				$values->walk(function($value) use ($name, $callable) {
@@ -41,7 +41,7 @@ class properties
 		return $this;
 	}
 
-	public function ifContains(property\name $name, property\value $value, callable $containsCallable, callable $notContainsCallable = null)
+	function ifContains(property\name $name, property\value $value, callable $containsCallable, callable $notContainsCallable = null)
 	{
 		if ($notContainsCallable === null)
 		{
@@ -59,7 +59,7 @@ class properties
 		);
 	}
 
-	public function ifContainsProperties(self $properties, callable $containsCallable, callable $notContainsCallable = null)
+	function ifContainsProperties(self $properties, callable $containsCallable, callable $notContainsCallable = null)
 	{
 		$properties->walk(function($name, $value) use ($notContainsCallable) {
 				$this->ifContains($name, $value, function() {}, function() use ($properties, $notContainsCallable) { $properties->stop(); $notContainsCallable(); });
@@ -71,14 +71,14 @@ class properties
 		return $this;
 	}
 
-	public function stop()
+	function stop()
 	{
 		$this->values->stop();
 
 		return $this;
 	}
 
-	public function ifNotStopped(callable $callable)
+	function ifNotStopped(callable $callable)
 	{
 		$this->values->ifNotStopped($callable);
 

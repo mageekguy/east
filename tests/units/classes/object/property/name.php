@@ -6,12 +6,12 @@ require __DIR__ . '/../../../runner.php';
 
 class name extends \atoum
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\object\property\name');
 	}
 
-	public function testMatch()
+	function testMatch()
 	{
 		$this
 			->given($this->newTestedInstance)

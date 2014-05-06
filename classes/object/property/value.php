@@ -8,7 +8,7 @@ use
 
 class value implements object\property\value
 {
-	public function match(object\property\value $value)
+	function match(object\property\value $value)
 	{
 		if ($this != $value)
 		{

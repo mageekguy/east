@@ -12,12 +12,12 @@ use
 
 class key extends \atoum
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\objects\key');
 	}
 
-	public function testIsEqualTo()
+	function testIsEqualTo()
 	{
 		$this
 			->given(
@@ -31,7 +31,7 @@ class key extends \atoum
 		;
 	}
 
-	public function testIsIdenticalTo()
+	function testIsIdenticalTo()
 	{
 		$this
 			->given(

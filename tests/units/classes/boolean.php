@@ -11,12 +11,12 @@ use
 
 class boolean extends units\test
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\boolean');
 	}
 
-	public function test__construct()
+	function test__construct()
 	{
 		$this
 			->given($this->newTestedInstance(true))
@@ -45,7 +45,7 @@ class boolean extends units\test
 		;
 	}
 
-	public function testIfTrue()
+	function testIfTrue()
 	{
 		$this
 			->object($this->newTestedInstance(false)->ifTrue(function() use (& $callable1) { $callable1 = true; }))->isTestedInstance
@@ -102,7 +102,7 @@ class boolean extends units\test
 		;
 	}
 
-	public function testIfFalse()
+	function testIfFalse()
 	{
 		$this
 			->object($this->newTestedInstance(true)->ifFalse(function() use (& $callable1) { $callable1 = true; }))->isTestedInstance

@@ -10,7 +10,7 @@ use
 
 interface user extends world\object
 {
-	public function openDoor(door $door);
-	public function closeDoor(door $door);
-	public function enterInArea(area $area);
+	function openDoor(door $door);
+	function closeDoor(door $door);
+	function enterInArea(area $area);
 }

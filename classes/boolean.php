@@ -10,7 +10,7 @@ class boolean implements world\boolean
 {
 	private $value = null;
 
-	public function __construct($value)
+	function __construct($value)
 	{
 		if ($value instanceof world\boolean)
 		{
@@ -24,17 +24,17 @@ class boolean implements world\boolean
 		$this->value = ($value == true);
 	}
 
-	public function ifTrue(callable $callable)
+	function ifTrue(callable $callable)
 	{
 		return $this->ifIs(true, $callable);
 	}
 
-	public function ifFalse(callable $callable)
+	function ifFalse(callable $callable)
 	{
 		return $this->ifIs(false, $callable);
 	}
 
-	public function not()
+	function not()
 	{
 		$this->value = ! $this->value;
 

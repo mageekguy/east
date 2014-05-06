@@ -14,32 +14,32 @@ class box implements objects\box
 {
 	private $objects = null;
 
-	public function __construct()
+	function __construct()
 	{
 		$this->objects = new jobs\objects();
 	}
 
-	public function isEqualTo(world\comparable $comparable)
+	function isEqualTo(world\comparable $comparable)
 	{
 		return new jobs\boolean($this == $comparable);
 	}
 
-	public function isIdenticalTo(world\comparable $comparable)
+	function isIdenticalTo(world\comparable $comparable)
 	{
 		return new jobs\boolean($this === $comparable);
 	}
 
-	public function userOpen(objects\box\user $user)
+	function userOpen(objects\box\user $user)
 	{
 		return new boolean\true();
 	}
 
-	public function userClose(objects\box\user $user)
+	function userClose(objects\box\user $user)
 	{
 		return new boolean\true();
 	}
 
-	public function userAddObject(objects\box\user $user, world\object $object)
+	function userAddObject(objects\box\user $user, world\object $object)
 	{
 		$user
 			->openBox($this)
@@ -52,7 +52,7 @@ class box implements objects\box
 		return $this;
 	}
 
-	public function userRemoveObject(objects\box\user $user)
+	function userRemoveObject(objects\box\user $user)
 	{
 		$user
 			->openBox($this)
@@ -65,7 +65,7 @@ class box implements objects\box
 		return $this;
 	}
 
-	public function userRemoveObjects(objects\box\user $user)
+	function userRemoveObjects(objects\box\user $user)
 	{
 		$user
 			->openBox($this)

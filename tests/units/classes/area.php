@@ -12,12 +12,12 @@ use
 
 class area extends units\test
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\area');
 	}
 
-	public function testObjectEnter()
+	function testObjectEnter()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -26,7 +26,7 @@ class area extends units\test
 		;
 	}
 
-	public function testObjectLeave()
+	function testObjectLeave()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -35,7 +35,7 @@ class area extends units\test
 		;
 	}
 
-	public function testAddDoor()
+	function testAddDoor()
 	{
 		$this
 			->given($this->newTestedInstance)

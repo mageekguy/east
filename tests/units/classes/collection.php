@@ -10,12 +10,12 @@ use
 
 class collection extends test
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\collection');
 	}
 
-	public function test__construct()
+	function test__construct()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -24,7 +24,7 @@ class collection extends test
 		;
 	}
 
-	public function testIsEmpty()
+	function testIsEmpty()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -37,7 +37,7 @@ class collection extends test
 		;
 	}
 
-	public function testIsNotEmpty()
+	function testIsNotEmpty()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -50,7 +50,7 @@ class collection extends test
 		;
 	}
 
-	public function testHasSize()
+	function testHasSize()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -76,7 +76,7 @@ class collection extends test
 		;
 	}
 
-	public function testAdd()
+	function testAdd()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -92,7 +92,7 @@ class collection extends test
 		;
 	}
 
-	public function testRemove()
+	function testRemove()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -129,7 +129,7 @@ class collection extends test
 		;
 	}
 
-	public function testRemoveLast()
+	function testRemoveLast()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -164,7 +164,7 @@ class collection extends test
 		;
 	}
 
-	public function testContains()
+	function testContains()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -178,7 +178,7 @@ class collection extends test
 		;
 	}
 
-	public function testContainsAt()
+	function testContainsAt()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -209,7 +209,7 @@ class collection extends test
 		;
 	}
 
-	public function testWalk()
+	function testWalk()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -244,7 +244,7 @@ class collection extends test
 		;
 	}
 
-	public function testApply()
+	function testApply()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -270,7 +270,7 @@ class collection extends test
 		;
 	}
 
-	public function testFilter()
+	function testFilter()
 	{
 		$this
 			->given($this->newTestedInstance)

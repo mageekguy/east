@@ -8,9 +8,9 @@ use
 
 interface box extends world\object
 {
-	public function userOpen(box\user $user);
-	public function userClose(box\user $user);
-	public function userAddObject(box\user $user, world\object $object);
-	public function userRemoveObject(box\user $user);
-	public function userRemoveObjects(box\user $user);
+	function userOpen(box\user $user);
+	function userClose(box\user $user);
+	function userAddObject(box\user $user, world\object $object);
+	function userRemoveObject(box\user $user);
+	function userRemoveObjects(box\user $user);
 }

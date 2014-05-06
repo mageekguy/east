@@ -15,23 +15,23 @@ class dictionary implements collections\dictionary
 	private $objects = null;
 	private $values = null;
 
-	public function __construct()
+	function __construct()
 	{
 		$this->objects = new objectsCollection();
 		$this->values = new valuesCollection();
 	}
 
-	public function hasSize($size)
+	function hasSize($size)
 	{
 		return $this->objects->hasSize($size);
 	}
 
-	public function isEmpty()
+	function isEmpty()
 	{
 		return $this->hasSize(0);
 	}
 
-	public function add(comparable $object, $value)
+	function add(comparable $object, $value)
 	{
 		$this
 			->objects
@@ -49,7 +49,7 @@ class dictionary implements collections\dictionary
 		return $this;
 	}
 
-	public function remove(comparable $object)
+	function remove(comparable $object)
 	{
 		$this
 			->objects
@@ -72,7 +72,7 @@ class dictionary implements collections\dictionary
 		return $this;
 	}
 
-	public function apply(comparable $object, callable $callable)
+	function apply(comparable $object, callable $callable)
 	{
 		return $this
 			->objects
@@ -101,7 +101,7 @@ class dictionary implements collections\dictionary
 		;
 	}
 
-	public function contains($value)
+	function contains($value)
 	{
 		return $this
 			->values
@@ -109,7 +109,7 @@ class dictionary implements collections\dictionary
 		;
 	}
 
-	public function containsAt($value, comparable $object)
+	function containsAt($value, comparable $object)
 	{
 		return $this
 			->objects
@@ -120,7 +120,7 @@ class dictionary implements collections\dictionary
 		;
 	}
 
-	public function walk(callable $callable)
+	function walk(callable $callable)
 	{
 		return $this->values->walk(function($value, $key) use ($callable) {
 				$this

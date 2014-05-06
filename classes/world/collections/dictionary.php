@@ -6,8 +6,8 @@ use jobs\world;
 
 interface dictionary
 {
-	public function add(world\comparable $comparable, $value);
-	public function remove(world\comparable $comparable);
-	public function apply(world\comparable $comparable, callable $callable);
-	public function walk(callable $callable);
+	function add(world\comparable $comparable, $value);
+	function remove(world\comparable $comparable);
+	function apply(world\comparable $comparable, callable $callable);
+	function walk(callable $callable);
 }

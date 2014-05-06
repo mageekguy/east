@@ -8,7 +8,7 @@ use
 
 class name implements object\property\name
 {
-	public function match(object\property\name $name)
+	function match(object\property\name $name)
 	{
 		if ($this != $name)
 		{

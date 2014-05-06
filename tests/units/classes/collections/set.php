@@ -12,12 +12,12 @@ use
 
 class set extends units\test
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\collections\set');
 	}
 
-	public function testContains()
+	function testContains()
 	{
 		$this
 			->given(
@@ -40,7 +40,7 @@ class set extends units\test
 		;
 	}
 
-	public function testAdd()
+	function testAdd()
 	{
 		$this
 			->given(
@@ -66,7 +66,7 @@ class set extends units\test
 		;
 	}
 
-	public function testRemove()
+	function testRemove()
 	{
 		$this
 			->given(

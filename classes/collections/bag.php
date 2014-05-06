@@ -11,27 +11,27 @@ class bag implements world\collections\bag
 {
 	private $comparables = null;
 
-	public function __construct()
+	function __construct()
 	{
 		$this->comparables = new jobs\collection();
 	}
 
-	public function isEmpty()
+	function isEmpty()
 	{
 		return $this->comparables->isEmpty();
 	}
 
-	public function isNotEmpty()
+	function isNotEmpty()
 	{
 		return $this->comparables->isNotEmpty();
 	}
 
-	public function hasSize($size)
+	function hasSize($size)
 	{
 		return $this->comparables->hasSize($size);
 	}
 
-	public function contains(world\comparable $comparable)
+	function contains(world\comparable $comparable)
 	{
 		return $this->walk(function($innerComparable) use ($comparable) {
 					return $comparable->isIdenticalTo($innerComparable)->not();
@@ -41,7 +41,7 @@ class bag implements world\collections\bag
 		;
 	}
 
-	public function add(world\comparable $comparable)
+	function add(world\comparable $comparable)
 	{
 		$this
 			->contains($comparable)
@@ -54,7 +54,7 @@ class bag implements world\collections\bag
 		return $this;
 	}
 
-	public function remove(world\comparable $comparable)
+	function remove(world\comparable $comparable)
 	{
 		$this->comparables
 			->filter(function($innerComparable) use ($comparable) {
@@ -66,7 +66,7 @@ class bag implements world\collections\bag
 		return $this;
 	}
 
-	public function removeAt($removedKey)
+	function removeAt($removedKey)
 	{
 		$this
 			->comparables
@@ -79,14 +79,14 @@ class bag implements world\collections\bag
 		return $this;
 	}
 
-	public function removeLast()
+	function removeLast()
 	{
 		$this->comparables->removeLast();
 
 		return $this;
 	}
 
-	public function removeAll()
+	function removeAll()
 	{
 		$this
 			->comparables
@@ -99,17 +99,17 @@ class bag implements world\collections\bag
 		return $this;
 	}
 
-	public function filter(callable $callable)
+	function filter(callable $callable)
 	{
 		return $this->comparables->filter($callable);
 	}
 
-	public function apply($key, callable $callable)
+	function apply($key, callable $callable)
 	{
 		return $this->comparables->apply($key, $callable);
 	}
 
-	public function applyOn(world\comparable $comparable, callable $callable)
+	function applyOn(world\comparable $comparable, callable $callable)
 	{
 		return $this
 			->walk(function($innerComparable, $key) use ($comparable, & $innerKey, $callable) {
@@ -131,7 +131,7 @@ class bag implements world\collections\bag
 		;
 	}
 
-	public function walk(callable $callable)
+	function walk(callable $callable)
 	{
 		return $this->comparables->walk($callable);
 	}

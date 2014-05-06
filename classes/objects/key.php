@@ -11,12 +11,12 @@ class key implements world\objects\key
 {
 	private $fingerprint = '';
 
-	public function __construct()
+	function __construct()
 	{
 		$this->fingerprint = uniqid();
 	}
 
-	public function isEqualTo(world\comparable $comparable)
+	function isEqualTo(world\comparable $comparable)
 	{
 		if ($comparable == $this)
 		{
@@ -26,7 +26,7 @@ class key implements world\objects\key
 		return new boolean\false();
 	}
 
-	public function isIdenticalTo(world\comparable $comparable)
+	function isIdenticalTo(world\comparable $comparable)
 	{
 		if ($comparable === $this)
 		{

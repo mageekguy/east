@@ -36,7 +36,7 @@ class box extends units\test
 		;
 	}
 
-	public function testUserOpen()
+	function testUserOpen()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -45,7 +45,7 @@ class box extends units\test
 		;
 	}
 
-	public function testUserClose()
+	function testUserClose()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -54,7 +54,7 @@ class box extends units\test
 		;
 	}
 
-	public function testUserAddObject()
+	function testUserAddObject()
 	{
 		$this
 			->given(
@@ -72,7 +72,7 @@ class box extends units\test
 		;
 	}
 
-	public function testUserRemoveObject()
+	function testUserRemoveObject()
 	{
 		$this
 			->given(
@@ -111,7 +111,7 @@ class box extends units\test
 		;
 	}
 
-	public function testUserRemoveObjects()
+	function testUserRemoveObjects()
 	{
 		$this
 			->given(

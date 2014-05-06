@@ -12,12 +12,12 @@ use
 
 class lock extends \atoum
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\objects\lockable');
 	}
 
-	public function testAgentLock()
+	function testAgentLock()
 	{
 		$this
 			->given(
@@ -37,7 +37,7 @@ class lock extends \atoum
 		;
 	}
 
-	public function testAgentUnLock()
+	function testAgentUnLock()
 	{
 		$this
 			->given(

@@ -4,6 +4,6 @@ namespace jobs\world;
 
 interface comparable
 {
-	public function isEqualTo(self $comparable);
-	public function isIdenticalTo(self $comparable);
+	function isEqualTo(self $comparable);
+	function isIdenticalTo(self $comparable);
 }

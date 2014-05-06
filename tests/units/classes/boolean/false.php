@@ -11,12 +11,12 @@ use
 
 class false extends units\test
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\boolean');
 	}
 
-	public function testIfTrue()
+	function testIfTrue()
 	{
 		$this
 			->object($this->newTestedInstance->ifTrue(function() use (& $callable) { $callable = true; }))->isTestedInstance
@@ -41,7 +41,7 @@ class false extends units\test
 		;
 	}
 
-	public function testIfFalse()
+	function testIfFalse()
 	{
 		$this
 			->object($this->newTestedInstance->ifFalse(function() use (& $callable1) { $callable1 = true; }))->isTestedInstance

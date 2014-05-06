@@ -12,12 +12,12 @@ use
 
 class property extends \atoum
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\object\property');
 	}
 
-	public function testLinkTo()
+	function testLinkTo()
 	{
 		$this
 			->given(

@@ -6,7 +6,7 @@ require __DIR__ . '/../../../../runner.php';
 
 class exception extends \atoum
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass
 			->implements('jobs\exception')

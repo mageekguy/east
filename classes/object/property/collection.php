@@ -12,7 +12,7 @@ class collection
 {
 	private $nameStorage = null;
 
-	public function add(name $name, value $value, object $object)
+	function add(name $name, value $value, object $object)
 	{
 		return $this;
 	}

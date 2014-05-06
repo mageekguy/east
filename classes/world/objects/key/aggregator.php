@@ -9,6 +9,6 @@ use
 
 interface aggregator
 {
-	public function takeKey(lockable $lockable, key $key);
-	public function giveKey(lockable $lockable, self $aggregator);
+	function takeKey(lockable $lockable, key $key);
+	function giveKey(lockable $lockable, self $aggregator);
 }

@@ -10,7 +10,7 @@ class object
 {
 	private $area = null;
 
-	public function enterInArea(world\area $area)
+	function enterInArea(world\area $area)
 	{
 		$this->area = $area;
 

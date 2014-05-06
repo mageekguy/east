@@ -9,6 +9,6 @@ use
 
 interface user extends key\agent
 {
-	public function openBox(box $box);
-	public function closeBox(box $box);
+	function openBox(box $box);
+	function closeBox(box $box);
 }

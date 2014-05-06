@@ -12,12 +12,12 @@ use
 
 class bag extends units\test
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\collections\bag');
 	}
 
-	public function testAdd()
+	function testAdd()
 	{
 		$this
 			->given(
@@ -45,7 +45,7 @@ class bag extends units\test
 		;
 	}
 
-	public function testRemove()
+	function testRemove()
 	{
 		$this
 			->given(
@@ -74,7 +74,7 @@ class bag extends units\test
 		;
 	}
 
-	public function testRemoveAt()
+	function testRemoveAt()
 	{
 		$this
 			->given(
@@ -104,7 +104,7 @@ class bag extends units\test
 		;
 	}
 
-	public function testRemoveLast()
+	function testRemoveLast()
 	{
 		$this
 			->given(
@@ -133,7 +133,7 @@ class bag extends units\test
 		;
 	}
 
-	public function testRemoveAll()
+	function testRemoveAll()
 	{
 		$this
 			->given(
@@ -158,7 +158,7 @@ class bag extends units\test
 		;
 	}
 
-	public function testApply()
+	function testApply()
 	{
 		$this
 			->given(
@@ -178,7 +178,7 @@ class bag extends units\test
 		;
 	}
 
-	public function testApplyOn()
+	function testApplyOn()
 	{
 		$this
 			->given(
@@ -202,7 +202,7 @@ class bag extends units\test
 		;
 	}
 
-	public function testContains()
+	function testContains()
 	{
 		$this
 			->given(

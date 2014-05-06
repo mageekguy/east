@@ -11,12 +11,12 @@ use
 
 class lockable extends \atoum
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->extends('jobs\objects\box');
 	}
 
-	public function testUserOpen()
+	function testUserOpen()
 	{
 		$this
 			->given(
@@ -29,7 +29,7 @@ class lockable extends \atoum
 		;
 	}
 
-	public function testUserClose()
+	function testUserClose()
 	{
 		$this
 			->given(
@@ -49,7 +49,7 @@ class lockable extends \atoum
 		;
 	}
 
-	public function testAgentLock()
+	function testAgentLock()
 	{
 		$this
 			->given(
@@ -68,7 +68,7 @@ class lockable extends \atoum
 		;
 	}
 
-	public function testAgentUnlock()
+	function testAgentUnlock()
 	{
 		$this
 			->given(

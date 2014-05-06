@@ -9,7 +9,7 @@ use
 
 class set extends collections\bag implements world\collections\set
 {
-	public function contains(world\comparable $comparable)
+	function contains(world\comparable $comparable)
 	{
 		return $this->walk(function($innerComparable) use ($comparable) {
 					return $comparable->isEqualTo($innerComparable)->not();
@@ -19,7 +19,7 @@ class set extends collections\bag implements world\collections\set
 		;
 	}
 
-	public function remove(world\comparable $comparable)
+	function remove(world\comparable $comparable)
 	{
 		$this
 			->filter(function($innerComparable) use ($comparable) {
@@ -31,7 +31,7 @@ class set extends collections\bag implements world\collections\set
 		return $this;
 	}
 
-	public function applyOn(world\comparable $comparable, callable $callable)
+	function applyOn(world\comparable $comparable, callable $callable)
 	{
 		return $this
 			->walk(function($innerComparable, $key) use ($comparable, & $innerKey, $callable) {

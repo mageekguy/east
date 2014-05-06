@@ -14,13 +14,13 @@ class property implements object\property
 	private $name = null;
 	private $value = null;
 
-	public function __construct(name $name, value $value)
+	function __construct(name $name, value $value)
 	{
 		$this->name = $name;
 		$this->value = $value;
 	}
 
-	public function linkTo(world\object $object, world\area $area)
+	function linkTo(world\object $object, world\area $area)
 	{
 		$area->addObject($object, $this->name, $this->value);
 

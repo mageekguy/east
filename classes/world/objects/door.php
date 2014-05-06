@@ -8,7 +8,7 @@ use
 
 interface door extends world\object
 {
-	public function userOpen(door\user $user);
-	public function userClose(door\user $user);
-	public function userCross(door\user $user);
+	function userOpen(door\user $user);
+	function userClose(door\user $user);
+	function userCross(door\user $user);
 }

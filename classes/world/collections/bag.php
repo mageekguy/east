@@ -6,9 +6,9 @@ use jobs\world;
 
 interface bag
 {
-	public function add(world\comparable $comparable);
-	public function remove(world\comparable $comparable);
-	public function walk(callable $callable);
-	public function apply($key, callable $callable);
-	public function contains(world\comparable $comparable);
+	function add(world\comparable $comparable);
+	function remove(world\comparable $comparable);
+	function walk(callable $callable);
+	function apply($key, callable $callable);
+	function contains(world\comparable $comparable);
 }

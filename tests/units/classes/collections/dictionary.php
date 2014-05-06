@@ -12,12 +12,12 @@ use
 
 class dictionary extends units\test
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\collections\dictionary');
 	}
 
-	public function testAdd()
+	function testAdd()
 	{
 		$this
 			->given(
@@ -40,7 +40,7 @@ class dictionary extends units\test
 		;
 	}
 
-	public function testRemove()
+	function testRemove()
 	{
 		$this
 			->given(
@@ -76,7 +76,7 @@ class dictionary extends units\test
 		;
 	}
 
-	public function testApply()
+	function testApply()
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -93,7 +93,7 @@ class dictionary extends units\test
 		;
 	}
 
-	public function testWalk()
+	function testWalk()
 	{
 		$this
 			->given($this->newTestedInstance)
