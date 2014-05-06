@@ -6,216 +6,229 @@ require __DIR__ . '/../runner.php';
 
 use
 	jobs\tests\units,
+	jobs\real,
 	mock\jobs\world
 ;
 
 class complex extends units\test
 {
-	public function testClass()
+	function testClass()
 	{
 		$this->testedClass->implements('jobs\world\complex');
 	}
 
-	public function testAddComplex()
+	function testAddRealAndImaginary()
 	{
 		$this
-			->given($this->newTestedInstance)
+			->given(
+				$this->newTestedInstance($a = new world\real, $b = new world\real),
+				$c = new world\real,
+				$newRealPart = new world\real,
+				$this->calling($c)->add = function($real) use ($a, $newRealPart) {
+					switch (true)
+					{
+						case $real === $a:
+							return $newRealPart;
+					}
+				},
+				$d = new world\real,
+				$newImaginaryPart = new world\real,
+				$this->calling($d)->add = function($real) use ($b, $newImaginaryPart) {
+					switch (true)
+					{
+						case $real === $b:
+							return $newImaginaryPart;
+					}
+				}
+			)
 			->then
-				->object($this->testedInstance->addComplex($complex = new world\complex))->isTestedInstance
-				->mock($complex)
-					->call('addToComplex')->withIdenticalArguments($this->testedInstance)->once
+				->object($this->testedInstance->addRealAndImaginary($c, $d))
+					->isEqualTo($this->newInstance($newRealPart, $newImaginaryPart))
 		;
 	}
 
-	public function testAddToComplex()
+	function testAdd()
 	{
 		$this
+			->given($complex = new world\complex)
+
+			->if($this->calling($complex)->addRealAndImaginary = $result = new complex)
+
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->addToComplex($complex = new world\complex))->isTestedInstance
+				->object($this->testedInstance->add($complex))->isIdenticalTo($result)
 				->mock($complex)
-					->call('add')->withArguments(0, 0)->once
+					->call('addRealAndImaginary')->withArguments(new real, new real)->once
 
-			->given($this->newTestedInstance($realPart = rand(- PHP_INT_MAX, PHP_INT_MAX)))
+			->given($this->newTestedInstance($realPart = new real(rand(- PHP_INT_MAX, PHP_INT_MAX))))
 			->then
-				->object($this->testedInstance->addToComplex($complex = new world\complex))->isTestedInstance
+				->object($this->testedInstance->add($complex))->isIdenticalTo($result)
 				->mock($complex)
-					->call('add')->withArguments($realPart, 0)->once
+					->call('addRealAndImaginary')->withArguments($realPart, new real)->once
 
-			->given($this->newTestedInstance($realPart = rand(- PHP_INT_MAX, PHP_INT_MAX), $imaginaryPart = rand(- PHP_INT_MAX, PHP_INT_MAX)))
+			->given($this->newTestedInstance($realPart = new real(- PHP_INT_MAX, PHP_INT_MAX), $imaginaryPart = new real(rand(- PHP_INT_MAX, PHP_INT_MAX))))
 			->then
-				->object($this->testedInstance->addToComplex($complex = new world\complex))->isTestedInstance
+				->object($this->testedInstance->add($complex))->isIdenticalTo($result)
 				->mock($complex)
-					->call('add')->withArguments($realPart, $imaginaryPart)->once
+					->call('addRealAndImaginary')->withArguments($realPart, $imaginaryPart)->once
 		;
 	}
 
-	public function testAdd()
+	function testSubstract()
 	{
 		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->add(0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance)
+			->given(
+				$complex = new world\complex,
+				$this->calling($complex)->opposite = $opposite = new world\complex,
+				$this->calling($opposite)->add = $result = new world\complex
+			)
 
-			->given($this->newTestedInstance)
+			->if($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->add(0, 0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance)
-
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->add($realPart = rand(- PHP_INT_MAX, PHP_INT_MAX), 0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance($realPart))
-
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->add($realPart = rand(- PHP_INT_MAX, PHP_INT_MAX), $imaginaryPart = rand(- PHP_INT_MAX, PHP_INT_MAX)))
-					->isTestedInstance
-					->isEqualTo($this->newInstance($realPart, $imaginaryPart))
-
-			->given($this->newTestedInstance(1))
-			->then
-				->object($this->testedInstance->add(0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance(1))
-
-			->given($this->newTestedInstance(1, 0))
-			->then
-				->object($this->testedInstance->add(0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance(1))
-
-			->given($this->newTestedInstance(1, 1))
-			->then
-				->object($this->testedInstance->add(0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance(1, 1))
-
-			->given($this->newTestedInstance(1, 1))
-			->then
-				->object($this->testedInstance->add(0, 0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance(1, 1))
-
-			->given($this->newTestedInstance(1, 1))
-			->then
-				->object($this->testedInstance->add(1, 1))
-					->isTestedInstance
-					->isEqualTo($this->newInstance(2, 2))
+				->object($this->testedInstance->substract($complex))->isIdenticalTo($result)
+				->mock($opposite)->call('add')->withIdenticalArguments($this->testedInstance)->once
 		;
 	}
 
-	public function testMultiplyWithComplex()
+	function testMultiplyWithRealAndImaginary()
 	{
 		$this
-			->given($this->newTestedInstance)
+			->given(
+				$this->newTestedInstance($a = new world\real, $b = new world\real),
+				$c = new world\real,
+				$ca = new world\real,
+				$cb = new world\real,
+				$this->calling($c)->multiply = function($real) use ($a, $b, $cb, $ca) {
+					switch (true)
+					{
+						case $real === $a:
+							return $ca;
+
+						case $real === $b:
+							return $cb;
+					}
+				},
+				$d = new world\real,
+				$da = new world\real,
+				$db = new world\real,
+				$this->calling($d)->multiply = function($real) use ($a, $b, $da, $db) {
+					switch (true)
+					{
+						case $real === $a:
+							return $da;
+
+						case $real === $b:
+							return $db;
+					}
+				},
+				$newRealPart = new world\real,
+				$this->calling($ca)->substract = function($real) use ($db, $newRealPart) {
+					if ($real === $db)
+					{
+						return $newRealPart;
+					}
+				},
+				$newImaginaryPart = new world\real,
+				$this->calling($da)->add = function($real) use ($cb, $newImaginaryPart) {
+					if ($real === $cb)
+					{
+						return $newImaginaryPart;
+					}
+				}
+			)
 			->then
-				->object($this->testedInstance->multiplyWithComplex($complex = new world\complex))->isTestedInstance
-				->mock($complex)
-					->call('multiplyComplex')->withIdenticalArguments($this->testedInstance)->once
+				->object($this->testedInstance->multiplyWithRealAndImaginary($c, $d))
+					->isEqualTo($this->newInstance($newRealPart, $newImaginaryPart))
 		;
 	}
 
-	public function testMultiplyComplex()
+	function testMultiply()
 	{
 		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->multiplyComplex($complex = new world\complex))->isTestedInstance
-				->mock($complex)
-					->call('multiply')->withArguments(0, 0)->once
+			->given(
+				$complex = new world\complex,
+				$this->calling($complex)->multiplyWithRealAndImaginary = $result = new complex
+			)
 
-			->given($this->newTestedInstance($realPart = rand(- PHP_INT_MAX, PHP_INT_MAX)))
+			->if($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->multiplyComplex($complex = new world\complex))->isTestedInstance
+				->object($this->testedInstance->multiply($complex))->isIdenticalTo($result)
 				->mock($complex)
-					->call('multiply')->withArguments($realPart, 0)->once
+					->call('multiplyWithRealAndImaginary')->withArguments(new real, new real)->once
 
-			->given($this->newTestedInstance($realPart = rand(- PHP_INT_MAX, PHP_INT_MAX), $imaginaryPart = rand(- PHP_INT_MAX, PHP_INT_MAX)))
+			->if($this->newTestedInstance($realPart = new real(rand(- PHP_INT_MAX, PHP_INT_MAX))))
 			->then
-				->object($this->testedInstance->multiplyComplex($complex = new world\complex))->isTestedInstance
+				->object($this->testedInstance->multiply($complex))->isIdenticalTo($result)
 				->mock($complex)
-					->call('multiply')->withArguments($realPart, $imaginaryPart)->once
+					->call('multiplyWithRealAndImaginary')->withArguments($realPart, new real)->once
+
+			->if($this->newTestedInstance($realPart = new real(rand(- PHP_INT_MAX, PHP_INT_MAX)), $imaginaryPart = new real(rand(- PHP_INT_MAX, PHP_INT_MAX))))
+			->then
+				->object($this->testedInstance->multiply($complex))->isIdenticalTo($result)
+				->mock($complex)
+					->call('multiplyWithRealAndImaginary')->withArguments($realPart, $imaginaryPart)->once
 		;
 	}
 
-	public function testMultiply()
+	function testDivide()
 	{
 		$this
-			->given($this->newTestedInstance)
+			->given(
+				$this->newTestedInstance,
+				$complex = new world\complex,
+				$this->calling($complex)->inverse = $inverse = new world\complex,
+				$this->calling($inverse)->multiply = $result = new world\complex
+			)
+
 			->then
-				->object($this->testedInstance->multiply(0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance)
-
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->multiply(0, 0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance)
-
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->multiply(rand(- PHP_INT_MAX, PHP_INT_MAX), 0))
-					->isTestedInstance
-					->isEqualTo($this->newInstance)
-
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->multiply(rand(- PHP_INT_MAX, PHP_INT_MAX), rand(- PHP_INT_MAX, PHP_INT_MAX)))
-					->isTestedInstance
-					->isEqualTo($this->newInstance)
-
-			->given($this->newTestedInstance(1))
-			->then
-				->object($this->testedInstance->multiply($realPart = rand(- PHP_INT_MAX, PHP_INT_MAX)))
-					->isTestedInstance
-
-			->given($this->newTestedInstance(1))
-				->object($this->testedInstance->multiply($realPart = 2, $imaginaryPart = 3))
-					->isTestedInstance
-					->isEqualTo($this->newInstance(2, 3))
-
-			->given($this->newTestedInstance(1, 1))
-				->object($this->testedInstance->multiply($realPart = 2, $imaginaryPart = 3))
-					->isTestedInstance
-					->isEqualTo($this->newInstance(-1, 5))
-
-			->given($this->newTestedInstance(2, 2))
-				->object($this->testedInstance->multiply($realPart = 2, $imaginaryPart = 3))
-					->isTestedInstance
-					->isEqualTo($this->newInstance(-2, 10))
+				->object($this->testedInstance->divide($complex))->isIdenticalTo($result)
+				->mock($inverse)->call('multiply')->withIdenticalArguments($this->testedInstance)->once
 		;
 	}
 
-	public function testHasModuleGreaterThan()
+	function testOpposite()
+	{
+		$this
+			->given(
+				$realPart = new world\real,
+				$this->calling($realPart)->opposite = $oppositeRealPart = new world\real,
+				$imaginaryPart = new world\real,
+				$this->calling($imaginaryPart)->opposite = $oppositeImaginaryPart = new world\real,
+				$this->newTestedInstance($realPart, $imaginaryPart)
+			)
+			->then
+				->object($this->testedInstance->opposite())
+					->isNotIdenticalTo($this->testedInstance)
+					->isEqualTo($this->newInstance($oppositeRealPart, $oppositeImaginaryPart))
+		;
+	}
+
+	function testInverse()
 	{
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->boolean($this->testedInstance->hasModuleGreaterThan(0))->isFalse
+				->exception(function() { $this->testedInstance->inverse(); })
+					->isInstanceOf('runtimeException')
+					->hasMessage('Division by zero!')
 
-			->given($this->newTestedInstance(1))
+			->given($this->newTestedInstance(new real(1)))
 			->then
-				->boolean($this->testedInstance->hasModuleGreaterThan(0))->isTrue
-				->boolean($this->testedInstance->hasModuleGreaterThan(1))->isFalse
+				->object($this->testedInstance->inverse())
+					->isNotIdenticalTo($this->testedInstance)
+					->isEqualTo($this->newInstance(new real(1)))
 
-			->given($this->newTestedInstance(2))
+			->given($this->newTestedInstance(new real(2)))
 			->then
-				->boolean($this->testedInstance->hasModuleGreaterThan(0))->isTrue
-				->boolean($this->testedInstance->hasModuleGreaterThan(1))->isTrue
-				->boolean($this->testedInstance->hasModuleGreaterThan(2))->isFalse
+				->object($this->testedInstance->inverse())->isEqualTo($this->newInstance(new real(1/2)))
 
-			->given($this->newTestedInstance(2, 2))
+			->given($this->newTestedInstance(new real(2)))
 			->then
-				->boolean($this->testedInstance->hasModuleGreaterThan(0))->isTrue
-				->boolean($this->testedInstance->hasModuleGreaterThan(1))->isTrue
-				->boolean($this->testedInstance->hasModuleGreaterThan(2))->isTrue
-				->boolean($this->testedInstance->hasModuleGreaterThan(sqrt(8)))->isFalse
+				->object($this->testedInstance->inverse())->isEqualTo($this->newInstance(new real(1/2)))
+
+			->given($this->newTestedInstance(new real(2), new real(3)))
+			->then
+				->object($this->testedInstance->inverse())->isEqualTo($this->newInstance(new real(2 / 13), new real(- 3 / 13)))
 		;
 	}
 }

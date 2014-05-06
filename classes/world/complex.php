@@ -4,13 +4,14 @@ namespace jobs\world;
 
 interface complex
 {
-	public function addComplex(self $complex);
-	public function addToComplex(self $complex);
-	public function add($realPart, $imaginaryPart = 0.);
+	function add(self $complex);
+	function substract(self $complex);
+	function multiply(self $complex);
+	function divide(self $complex);
 
-	public function multiplyWithComplex(self $complex);
-	public function multiplyComplex(self $complex);
-	public function multiply($realPart, $imaginaryPart = 0.);
+	function inverse();
+	function opposite();
 
-	public function hasModuleGreaterThan($float);
+	function addRealAndImaginary(real $real, real $imaginary = null);
+	function multiplyWithRealAndImaginary(real $real, real $imaginary = null);
 }

@@ -2,11 +2,17 @@
 
 namespace jobs;
 
+use
+	jobs\world
+;
+
 class object
 {
-	public function hasProperties(world\object\properties $properties, callable $callable)
+	private $area = null;
+
+	public function enterInArea(world\area $area)
 	{
-		$properties->intersect($this->properties, $callable);
+		$this->area = $area;
 
 		return $this;
 	}

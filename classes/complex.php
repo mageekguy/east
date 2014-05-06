@@ -2,64 +2,73 @@
 
 namespace jobs;
 
+use
+	jobs\world
+;
+
 class complex implements world\complex
 {
-	private $realPart = 0.;
-	private $imaginaryPart = 0.;
+	private $a = null;
+	private $b = null;
 
-	public function __construct($realPart = 0., $imaginaryPart = 0.0)
+	function __construct(world\real $a = null, world\real $b = null)
 	{
-		$this->setWith($realPart, $imaginaryPart);
+		$this->a = $a ?: new real;
+		$this->b = $b ?: new real;
 	}
 
-	public function addComplex(world\complex $complex)
+	function add(world\complex $complex)
 	{
-		$complex->addToComplex($this);
-
-		return $this;
+		return $complex->addRealAndImaginary($this->a, $this->b);
 	}
 
-	public function addToComplex(world\complex $complex)
+	function addRealAndImaginary(world\real $c, world\real $d = null)
 	{
-		$complex->add($this->realPart, $this->imaginaryPart);
+		if ($d === null)
+		{
+			$d = new real;
+		}
 
-		return $this;
+		return new self($c->add($this->a), $d->add($this->b));
 	}
 
-	public function add($realPart, $imaginaryPart = 0.)
+	function substract(world\complex $complex)
 	{
-		return $this->setWith($this->realPart + $realPart, $this->imaginaryPart + $imaginaryPart);
+		return $complex->opposite()->add($this);
 	}
 
-	public function multiplyWithComplex(world\complex $complex)
+	function multiply(world\complex $complex)
 	{
-		$complex->multiplyComplex($this);
-
-		return $this;
+		return $complex->multiplyWithRealAndImaginary($this->a, $this->b);
 	}
 
-	public function multiplyComplex(world\complex $complex)
+	function multiplyWithRealAndImaginary(world\real $c, world\real $d = null)
 	{
-		$complex->multiply($this->realPart, $this->imaginaryPart);
+		if ($d === null)
+		{
+			$d = new real;
+		}
 
-		return $this;
+		return new self(
+			$c->multiply($this->a)->substract($d->multiply($this->b)),
+			$d->multiply($this->a)->add($c->multiply($this->b))
+		);
 	}
 
-	public function multiply($realPart, $imaginaryPart = 0.)
+	function divide(world\complex $complex)
 	{
-		return $this->setWith(($this->realPart * $realPart) - ($this->imaginaryPart * $imaginaryPart), ($this->realPart * $imaginaryPart) + ($this->imaginaryPart * $realPart));
+		return $complex->inverse()->multiply($this);
 	}
 
-	public function hasModuleGreaterThan($float)
+	function opposite()
 	{
-		return new boolean(sqrt(pow($this->realPart, 2) + pow($this->imaginaryPart, 2)) > $float);
+		return new self($this->a->opposite(), $this->b->opposite());
 	}
 
-	private function setWith($realPart, $imaginaryPart)
+	function inverse()
 	{
-		$this->realPart = (float) $realPart;
-		$this->imaginaryPart = (float) $imaginaryPart;
+		$sumOfa²Andb² = $this->a->multiply($this->a)->add($this->b->multiply($this->b));
 
-		return $this;
+		return new self($this->a->divide($sumOfa²Andb²), $this->b->opposite()->divide($sumOfa²Andb²));
 	}
 }
