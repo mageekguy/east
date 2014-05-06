@@ -59,12 +59,14 @@ class area extends units\test
 			->if($this->calling($object)->isIdenticalTo = function($anObject) use ($object) { return new boolean($object === $anObject); })
 			->then
 				->object($this->testedInstance->objectLeave($object))->isTestedInstance
+				->mock($object)->call('leaveArea')->withIdenticalArguments($this->testedInstance)->never
 				->boolean($this->testedInstance->containsObject($object))
 					->isFalse
 
 			->if($this->testedInstance->objectEnter($object))
 			->then
 				->object($this->testedInstance->objectLeave($object))->isTestedInstance
+				->mock($object)->call('leaveArea')->withIdenticalArguments($this->testedInstance)->once
 				->boolean($this->testedInstance->containsObject($object))
 					->isFalse
 				->boolean($this->testedInstance->numberOfObjectsIs(1))

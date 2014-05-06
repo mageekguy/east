@@ -54,4 +54,11 @@ class door implements objects\door
 
 		return $this;
 	}
+
+	function leaveArea(world\area $area)
+	{
+		$area->removeDoor($this);
+
+		return $this;
+	}
 }

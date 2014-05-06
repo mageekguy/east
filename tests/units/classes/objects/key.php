@@ -58,4 +58,17 @@ class key extends units\test
 				->mock($area)->call('objectEnter')->withIdenticalArguments($this->testedInstance)->once
 		;
 	}
+
+	function testLeaveArea()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$area = new area
+			)
+			->then
+				->object($this->testedInstance->leaveArea($area))->isTestedInstance
+				->mock($area)->call('objectLeave')->withIdenticalArguments($this->testedInstance)->once
+		;
+	}
 }

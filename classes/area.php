@@ -41,7 +41,16 @@ class area implements world\area
 
 	function objectLeave(world\object $object)
 	{
-		$this->objects->remove($object);
+		$this
+			->objects
+				->contains($object)
+					->ifTrue(function() use ($object) {
+							$this->objects->remove($object);
+
+							$object->leaveArea($this);
+						}
+					)
+		;
 
 		return $this;
 	}

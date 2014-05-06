@@ -121,6 +121,20 @@ class door extends units\test
 			)
 			->then
 				->object($this->testedInstance->enterInArea($area))->isTestedInstance
+				->mock($area)->call('addDoor')->withIdenticalArguments($this->testedInstance)->once
+		;
+	}
+
+	function testLeaveArea()
+	{
+		$this
+			->given(
+				$area = new area,
+				$this->newTestedInstance(new area)
+			)
+			->then
+				->object($this->testedInstance->leaveArea($area))->isTestedInstance
+				->mock($area)->call('removeDoor')->withIdenticalArguments($this->testedInstance)->once
 		;
 	}
 }

@@ -32,4 +32,11 @@ class key implements world\objects\key
 
 		return $this;
 	}
+
+	function leaveArea(world\area $area)
+	{
+		$area->objectLeave($this);
+
+		return $this;
+	}
 }

@@ -84,4 +84,11 @@ class box implements objects\box
 
 		return $this;
 	}
+
+	function leaveArea(world\area $area)
+	{
+		$area->objectLeave($this);
+
+		return $this;
+	}
 }
