@@ -5,12 +5,13 @@ namespace jobs\tests\units\objects;
 require __DIR__ . '/../../runner.php';
 
 use
+	jobs\tests\units,
 	jobs\boolean,
 	mock\jobs\world\area,
 	mock\jobs\world\objects
 ;
 
-class key extends \atoum
+class key extends units\test
 {
 	function testClass()
 	{
@@ -25,9 +26,9 @@ class key extends \atoum
 				$key = new objects\key()
 			)
 			->then
-				->object($this->testedInstance->isEqualTo($key))->isEqualTo(new boolean\false())
-				->object($this->testedInstance->isEqualTo($this->testedInstance))->isEqualTo(new boolean\true())
-				->object($this->testedInstance->isEqualTo(clone $this->testedInstance))->isEqualTo(new boolean\true())
+				->boolean($this->testedInstance->isEqualTo($key))->isFalse
+				->boolean($this->testedInstance->isEqualTo($this->testedInstance))->isTrue
+				->boolean($this->testedInstance->isEqualTo(clone $this->testedInstance))->isTrue
 		;
 	}
 
@@ -39,9 +40,9 @@ class key extends \atoum
 				$key = new objects\key()
 			)
 			->then
-				->object($this->testedInstance->isIdenticalTo($key))->isEqualTo(new boolean\false())
-				->object($this->testedInstance->isIdenticalTo($this->testedInstance))->isEqualTo(new boolean\true())
-				->object($this->testedInstance->isIdenticalTo(clone $this->testedInstance))->isEqualTo(new boolean\false())
+				->boolean($this->testedInstance->isIdenticalTo($key))->isFalse
+				->boolean($this->testedInstance->isIdenticalTo($this->testedInstance))->isTrue
+				->boolean($this->testedInstance->isIdenticalTo(clone $this->testedInstance))->isFalse
 		;
 	}
 

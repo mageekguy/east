@@ -18,22 +18,12 @@ class key implements world\objects\key
 
 	function isEqualTo(world\comparable $comparable)
 	{
-		if ($comparable == $this)
-		{
-			return new boolean\true();
-		}
-
-		return new boolean\false();
+		return new boolean($comparable == $this);
 	}
 
 	function isIdenticalTo(world\comparable $comparable)
 	{
-		if ($comparable === $this)
-		{
-			return new boolean\true();
-		}
-
-		return new boolean\false();
+		return new boolean($comparable === $this);
 	}
 
 	function enterInArea(world\area $area)
