@@ -111,4 +111,16 @@ class door extends units\test
 						->call('objectEnter')->withIdenticalArguments($user)->once
 		;
 	}
+
+	function testEnterInArea()
+	{
+		$this
+			->given(
+				$area = new area,
+				$this->newTestedInstance(new area)
+			)
+			->then
+				->object($this->testedInstance->enterInArea($area))->isTestedInstance
+		;
+	}
 }

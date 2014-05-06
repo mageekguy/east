@@ -7,6 +7,7 @@ require __DIR__ . '/../../runner.php';
 use
 	jobs\boolean,
 	jobs\tests\units,
+	mock\jobs\world\area,
 	mock\jobs\world\object,
 	mock\jobs\world\objects,
 	mock\jobs\world\comparable
@@ -142,6 +143,19 @@ class box extends units\test
 			)
 			->then
 				->object($this->testedInstance->userRemoveObjects($user))->isTestedInstance
+		;
+	}
+
+	function testEnterInArea()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$area = new area
+			)
+			->then
+				->object($this->testedInstance->enterInArea($area))->isTestedInstance
+				->mock($area)->call('objectEnter')->withIdenticalArguments($this->testedInstance)->once
 		;
 	}
 }

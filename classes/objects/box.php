@@ -77,4 +77,11 @@ class box implements objects\box
 
 		return $this;
 	}
+
+	function enterInArea(world\area $area)
+	{
+		$area->objectEnter($this);
+
+		return $this;
+	}
 }

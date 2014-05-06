@@ -6,6 +6,7 @@ require __DIR__ . '/../../../runner.php';
 
 use
 	jobs\boolean,
+	mock\jobs\world\area,
 	mock\jobs\world\objects
 ;
 
@@ -84,6 +85,19 @@ class lockable extends \atoum
 			->if($this->calling($key)->isEqualTo = $false = new boolean\false())
 			->then
 				->object($this->testedInstance->agentUnlock($agent, $key))->isIdenticalTo($false)
+		;
+	}
+
+	function testEnterInArea()
+	{
+		$this
+			->given(
+				$this->newTestedInstance(new objects\key()),
+				$area = new area
+			)
+			->then
+				->object($this->testedInstance->enterInArea($area))->isTestedInstance
+				->mock($area)->call('objectEnter')->withIdenticalArguments($this->testedInstance)->once
 		;
 	}
 }

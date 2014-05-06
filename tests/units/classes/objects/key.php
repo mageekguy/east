@@ -6,7 +6,7 @@ require __DIR__ . '/../../runner.php';
 
 use
 	jobs\boolean,
-	mock\jobs\world,
+	mock\jobs\world\area,
 	mock\jobs\world\objects
 ;
 
@@ -42,6 +42,19 @@ class key extends \atoum
 				->object($this->testedInstance->isIdenticalTo($key))->isEqualTo(new boolean\false())
 				->object($this->testedInstance->isIdenticalTo($this->testedInstance))->isEqualTo(new boolean\true())
 				->object($this->testedInstance->isIdenticalTo(clone $this->testedInstance))->isEqualTo(new boolean\false())
+		;
+	}
+
+	function testEnterInArea()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$area = new area
+			)
+			->then
+				->object($this->testedInstance->enterInArea($area))->isTestedInstance
+				->mock($area)->call('objectEnter')->withIdenticalArguments($this->testedInstance)->once
 		;
 	}
 }

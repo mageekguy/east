@@ -47,4 +47,11 @@ class door implements objects\door
 				)
 		;
 	}
+
+	function enterInArea(world\area $area)
+	{
+		$area->addDoor($this);
+
+		return $this;
+	}
 }

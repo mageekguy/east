@@ -35,4 +35,11 @@ class key implements world\objects\key
 
 		return new boolean\false();
 	}
+
+	function enterInArea(world\area $area)
+	{
+		$area->objectEnter($this);
+
+		return $this;
+	}
 }
