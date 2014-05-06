@@ -31,12 +31,12 @@ class box implements objects\box
 
 	function userOpen(objects\box\user $user)
 	{
-		return new boolean\true();
+		return new boolean\true;
 	}
 
 	function userClose(objects\box\user $user)
 	{
-		return new boolean\true();
+		return new boolean\true;
 	}
 
 	function userAddObject(objects\box\user $user, world\object $object)
