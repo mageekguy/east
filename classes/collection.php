@@ -89,11 +89,11 @@ class collection implements world\collection
 		return $this
 			->isEmpty()
 				->ifFalse(function() use ($callable) {
-						$break = false;
+						$action = new collection\action($callable, new boolean\true);
 
 						reset($this->values);
 
-						$action = new collection\action($callable, new boolean\true);
+						$break = false;
 
 						while ($break === false && list($key, $value) = each($this->values))
 						{
