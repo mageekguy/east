@@ -20,15 +20,13 @@ class action
 	{
 		$callableResult = call_user_func_array($this->callable, func_get_args());
 
-		return (new boolean($callableResult instanceof boolean))
-			->ifFalse(function() {
-					return $this->default;
-				}
-			)
-			->ifTrue(function() use ($callableResult) {
-					return $callableResult;
+		(new boolean($callableResult instanceof boolean === false))
+			->ifTrue(function() use (& $callableResult) {
+					$callableResult = $this->default;
 				}
 			)
 		;
+
+		return $callableResult;
 	}
 }

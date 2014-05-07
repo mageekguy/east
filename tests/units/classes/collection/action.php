@@ -18,17 +18,17 @@ class action extends units\test
 			->then
 				->boolean($testedInstance())->isFalse
 
-			->given($testedInstance = $this->newTestedInstance(function() {}, new boolean\true))
+			->given($testedInstance = $this->newTestedInstance(function() {}, $true = new boolean\true))
 			->then
-				->boolean($testedInstance())->isTrue
+				->object($testedInstance())->isIdenticalTo($true)
 
-			->given($testedInstance = $this->newTestedInstance(function() { return new boolean\false; }))
+			->given($testedInstance = $this->newTestedInstance(function() use (& $false) { return $false = new boolean\false; }))
 			->then
-				->boolean($testedInstance())->isFalse
+				->object($testedInstance())->isIdenticalTo($false)
 
-			->given($testedInstance = $this->newTestedInstance(function() { return new boolean\true; }))
+			->given($testedInstance = $this->newTestedInstance(function() use (& $true) { return $true = new boolean\true; }))
 			->then
-				->boolean($testedInstance())->isTrue
+				->object($testedInstance())->isIdenticalTo($true)
 		;
 	}
 }
