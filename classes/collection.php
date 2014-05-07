@@ -91,20 +91,15 @@ class collection implements world\collection
 				->ifFalse(function() use ($callable) {
 						$break = false;
 
-						reset($this
-							->values
-						);
+						reset($this->values);
+
+						$action = new collection\action($callable, new boolean\true);
 
 						while ($break === false && list($key, $value) = each($this->values))
 						{
-							$this
-								->executeIfBoolean($callable($value, $key), function($boolean) use (& $break) {
-										$boolean
-											->ifFalse(function() use (& $break) {
-													$break = true;
-												}
-											)
-										;
+							$action($value, $key)
+								->ifFalse(function() use (& $break) {
+										$break = true;
 									}
 								)
 							;
@@ -120,7 +115,9 @@ class collection implements world\collection
 	{
 		return (new boolean(isset($this->values[$key])))
 			->ifTrue(function() use ($key, $callable) {
-					return $callable($this->values[$key], $key);
+					$action = new collection\action($callable, new boolean\true);
+
+					return $action($this->values[$key], $key);
 				}
 			)
 		;
@@ -134,14 +131,13 @@ class collection implements world\collection
 						$values = $this->values;
 						$this->values = [];
 
+						$action = new collection\action($callable);
+
 						foreach ($values as $key => $value)
 						{
-							$this
-								->executeIfBoolean($callable($value, $key), function($boolean) use ($value, $key) {
-										$boolean->ifTrue(function() use ($value, $key) {
-												$this->add($value, $key);
-											}
-										);
+							$action($value, $key)
+								->ifTrue(function() use ($value, $key) {
+										$this->add($value, $key);
 									}
 								)
 							;
@@ -151,15 +147,5 @@ class collection implements world\collection
 					}
 				)
 		;
-	}
-
-	private function executeIfBoolean($value, callable $booleanCallable)
-	{
-		if ($value instanceof boolean)
-		{
-			$booleanCallable($value);
-		}
-
-		return $this;
 	}
 }
